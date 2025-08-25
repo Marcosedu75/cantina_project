@@ -1,0 +1,14 @@
+<nav>
+    <ul>
+      <li><a href="{% url 'home' %}">Início</a></li>
+      {% if request.user.is_authenticated %}
+    <form method="post" action="/sair/">
+        {% csrf_token %}
+        <button type="submit">Sair</button>
+    </form>
+      {% else %}
+        <li><a href="{% url 'login' %}">Entrar</a></li>
+        <li><a href="{% url 'cadastro_view' %}">Cadastrar</a></li>
+      {% endif %}
+    </ul>
+  </nav>

@@ -1,0 +1,14 @@
+<!-- home.html -->
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Bem-vindo, {{ request.user.username }}!</h1>
+
+  {% if request.user.perfil.role == 'aluno' %}
+    <p>Você pode fazer pedidos na cantina e acompanhar o status.</p>
+    <a href="{% url 'fazer_pedido' %}">Fazer Pedido</a>
+  {% elif request.user.perfil.role == 'cantineiro' %}
+    <p>Você pode gerenciar os pedidos e editar os produtos disponíveis.</p>
+    <a href="{% url 'gerenciar_pedidos' %}">Ver Pedidos</a>
+    <a href="{% url 'produtos' %}">Editar Produtos</a>
+  {% endif %}
+{% endblock %}
