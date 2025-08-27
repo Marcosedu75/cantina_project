@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect
 from .forms import CadastroForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
+from usuario.models import Usuario  # importando o modelo de perfil
+from django.contrib.auth.decorators import login_required
+
 
 
 def home_view(request):
+    return render(request, 'home.html')
+
+def home_public(request):
     return render(request, 'home.html')
 
 def cadastro_view(request):
@@ -35,18 +41,28 @@ def login_view(request):
     
     return render(request, 'login.html', {'form': form})
 
+
+
 def logout_view(request):
     logout(request)
     return redirect('login')
 
 def login_redirect_view(request):
-    if request.user.tipo_usuario == 'aluno':
-        return redirect('dashboard_aluno')
-    elif request.user.tipo_usuario == 'cantineiro':
-        return redirect('dashboard_cantineiro')
-    else:
-        return redirect('/')
+    if request.user.perfil.role == 'aluno':
+        return render(request, 'dashboard_aluno.html')
+    if request.user.perfil.role == 'cantineiro':
+        return render(request, 'dashboard_cantineiro.html')
+    return redirect('home')
 
+def gerenciar_pedidos_view(request):
+    # lógica para mostrar pedidos
+    return render(request, 'gerenciar_pedidos.html')
+
+def produtos(request):
+    return render(request, 'produtos')
+
+def fazer_pedido(request):
+    return render(request, 'fazer_pedidos')
 
 
 
