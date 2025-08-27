@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 
 
+
 def home_view(request):
     return render(request, 'home.html')
 
@@ -59,12 +60,13 @@ def gerenciar_pedidos_view(request):
     return render(request, 'gerenciar_pedidos.html')
 
 def produtos(request):
-    return render(request, 'produtos')
+    return render(request, 'produtos.html')
 
 def fazer_pedido(request):
     return render(request, 'fazer_pedidos')
 
-
+def listar(request):
+    return redirect('listar_produtos') 
 
 
 

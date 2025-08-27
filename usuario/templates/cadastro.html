@@ -25,6 +25,10 @@
         {% endif %}
 
         <button type="submit">Cadastrar</button>
+        
+    </form>
+    <form action="{% url 'login' %}" method="get">
+        <button type="submit" class="btn btn-primary">Já tenho uma conta</button>
     </form>
 </body>
 </html>

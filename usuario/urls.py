@@ -16,7 +16,6 @@ urlpatterns = [
     path('produtos/', produtos, name='produtos'),
     path('fazerpedido/', fazer_pedido, name='fazer_pedido')
 
-    
 ]
 
 
