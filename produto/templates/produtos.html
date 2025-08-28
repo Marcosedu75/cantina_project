@@ -1,21 +1,27 @@
-<h2>Produtos</h2>
+<!-- produto/templates/produtos.html -->
+<h2>Produtos Disponíveis</h2>
+
 <ul>
   {% for produto in produtos %}
     <li>
       {{ produto.nome }} - R$ {{ produto.preco }}
-      {% if request.user.perfil.role == 'cantineiro' %}
-        <a href="{% url 'editar_produto' produto.id %}">Editar</a>
+      
+      {% if request.user.perfil.role == 'cantineiro' and produto.criado_por == request.user.perfil %}
+        <!-- Botão Editar só aparece para produtos criados pelo cantineiro -->
+        <a href="{% url 'editar_produto' produto.id %}" class="btn btn-sm btn-warning">Editar</a>
       {% endif %}
     </li>
+  {% empty %}
+    <li>Nenhum produto disponível.</li>
   {% endfor %}
 </ul>
 
 {% if request.user.perfil.role == 'cantineiro' %}
-  <a href="{% url 'criar_produto' %}">Adicionar novo produto</a>
+  <!-- Botão para criar novo produto -->
+  <a href="{% url 'criar_produto' %}" class="btn btn-primary mt-3">Adicionar Produto</a>
 {% endif %}
 
-<footer>
-  <button class="nav-item">
-    <a class="nav-link" href="{% url 'home' %}">Voltar</a>
-  </button>
-</footer>
+<!-- Botão Voltar -->
+<form action="{% url 'home' %}" method="get" style="margin-top: 10px;">
+  <button type="submit" class="btn btn-secondary">Voltar</button>
+</form>

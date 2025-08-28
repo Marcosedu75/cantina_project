@@ -9,7 +9,6 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('cadastro/', cadastro_view, name='cadastro_view'),
     path('login/', login_view, name='login'),
-    path('dashboard/aluno/', login_redirect_view, name='dashboard_aluno'),
     path('dashboard/cantineiro/', login_redirect_view, name='dashboard_cantineiro'),
     path('logout/', logout_view, name='logout'),
     path('gerenciamento/', gerenciar_pedidos_view, name='gerenciar_pedidos'),
