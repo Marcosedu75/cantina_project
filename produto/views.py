@@ -42,11 +42,5 @@ def editar_produto(request, produto_id):
     return render(request, 'form.html', {'form': form, 'titulo': 'Editar Produto'})
 
 def listar_produtos(request):
-    perfil = Perfil.objects.get(user=request.user)
-
-    if perfil.role == 'cantineiro':
-        produtos = Produto.objects.filter(criado_por=perfil)
-    else:
-        produtos = Produto.objects.filter(estoque__gt=0)
-
-    return render(request, 'listar.html', {'produtos': produtos})
+    produtos = Produto.objects.all()
+    return render(request, 'produtos.html', {'produtos': produtos})

@@ -1,0 +1,9 @@
+<h2>Produtos Cadastrados</h2>
+
+<ul>
+  {% for produto in produtos %}
+    <li>{{ produto.nome }} - R$ {{ produto.preco }}</li>
+  {% empty %}
+    <li>Nenhum produto cadastrado.</li>
+  {% endfor %}
+</ul>
