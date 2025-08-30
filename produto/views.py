@@ -6,30 +6,32 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def criar_produto(request):
-    perfil = Perfil.objects.get(user=request.user)
+    perfil = get_object_or_404(Perfil, user=request.user)
 
     if perfil.role != 'cantineiro':
-        return redirect('listar_produtos')  # redireciona alunos ou outros usuários
+        # Idealmente, redirecionar para uma página de acesso negado ou home
+        return redirect('listar_produtos')
 
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
             produto = form.save(commit=False)
-            produto.save()  # salvando produto no banco
+            produto.criado_por = perfil  # Associa o produto ao perfil do cantineiro
+            produto.save()
             return redirect('listar_produtos')
     else:
         form = ProdutoForm()
 
     return render(request, 'form.html', {'form': form, 'titulo': 'Criar Produto'})
 
-
 @login_required
 def editar_produto(request, produto_id):
-    perfil = Perfil.objects.get(user=request.user)
+    perfil = get_object_or_404(Perfil, user=request.user)
     if perfil.role != 'cantineiro':
-        return redirect('listar_produtos')  # redireciona usuários não cantineiros
+        return redirect('listar_produtos')
 
-    produto = get_object_or_404(Produto, id=produto_id)
+    # Garante que o cantineiro só possa editar seus próprios produtos
+    produto = get_object_or_404(Produto, id=produto_id, criado_por=perfil)
 
     if request.method == 'POST':
         form = ProdutoForm(request.POST, instance=produto)
@@ -41,6 +43,15 @@ def editar_produto(request, produto_id):
 
     return render(request, 'form.html', {'form': form, 'titulo': 'Editar Produto'})
 
+@login_required
 def listar_produtos(request):
-    produtos = Produto.objects.all()
-    return render(request, 'produtos.html', {'produtos': produtos})
+    perfil = get_object_or_404(Perfil, user=request.user)
+    
+    # Cantineiros veem apenas os produtos que eles criaram
+    if perfil.role == 'cantineiro':
+        produtos = Produto.objects.filter(criado_por=perfil)
+    else:
+        # Alunos e outros perfis veem todos os produtos
+        produtos = Produto.objects.all()
+
+    return render(request, 'produtos.html', {'produtos': produtos, 'perfil': perfil})

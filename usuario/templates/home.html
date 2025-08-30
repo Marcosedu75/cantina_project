@@ -5,12 +5,12 @@
 
   {% if request.user.perfil.role == 'aluno' %}
     <p>Você pode fazer pedidos na cantina e acompanhar o status.</p>
-    <a href="{% url 'fazer_pedido' %}">Fazer Pedido</a>
+    <a href="#">Fazer Pedido</a>
   {% elif request.user.perfil.role == 'cantineiro' %}
     <p>Você pode gerenciar os pedidos e editar os produtos disponíveis.</p>
     <li><a href="#">Gerenciar cardápio</a></li>
     <li><a href="#">Relatórios de consumo</a></li>
     <li><a href="{% url 'gerenciar_pedidos' %}">Ver Pedidos</a></li>
-    <li><a href="{% url 'produtos' %}">Editar Produtos</a></li>
+    <li><a href="{% url 'listar_produtos' %}">Editar Produtos</a></li>
   {% endif %}
 {% endblock %}
