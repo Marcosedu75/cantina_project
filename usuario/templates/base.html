@@ -4,67 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Cantina{% endblock %}</title>
-    
-    <!-- Bootstrap (ou Tailwind se preferir) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">Cantina</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                    aria-expanded="false" aria-label="Alternar navegação">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Olá, {{ user.username }}</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Sair</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Entrar</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'cadastro_view' %}">Registrar</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+    <nav>
+        <div>
+            <a href="{% url 'home' %}">Cantina</a>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li>Olá, {{ user.username }}</li>
+                    <li><a href="{% url 'logout' %}">Sair</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Entrar</a></li>
+                    <li><a href="{% url 'cadastro_view' %}">Registrar</a></li>
+                {% endif %}
+            </ul>
         </div>
     </nav>
 
+
     <!-- Mensagens -->
-    <div class="container">
+    <div>
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
+                <div>
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
     </div>
 
+
     <!-- Conteúdo principal -->
-    <div class="container">
+    <div>
         {% block content %}
         {% endblock %}
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p class="mb-0">&copy; 2025 Cantina Escolar - Todos os direitos reservados</p>
-    </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Cantina Escolar - Todos os direitos reservados</p>
+    </footer>
 </body>
 </html>
+
+
+
