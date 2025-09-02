@@ -9,14 +9,13 @@ def criar_produto(request):
     perfil = get_object_or_404(Perfil, user=request.user)
 
     if perfil.role != 'cantineiro':
-        # Idealmente, redirecionar para uma página de acesso negado ou home
         return redirect('listar_produtos')
 
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
             produto = form.save(commit=False)
-            produto.criado_por = perfil  # Associa o produto ao perfil do cantineiro
+            produto.criado_por = request.user  # ✅ agora associa ao User
             produto.save()
             return redirect('listar_produtos')
     else:
@@ -27,11 +26,12 @@ def criar_produto(request):
 @login_required
 def editar_produto(request, produto_id):
     perfil = get_object_or_404(Perfil, user=request.user)
+
     if perfil.role != 'cantineiro':
         return redirect('listar_produtos')
 
     # Garante que o cantineiro só possa editar seus próprios produtos
-    produto = get_object_or_404(Produto, id=produto_id, criado_por=perfil)
+    produto = get_object_or_404(Produto, id=produto_id, criado_por=request.user)
 
     if request.method == 'POST':
         form = ProdutoForm(request.POST, instance=produto)
@@ -46,12 +46,12 @@ def editar_produto(request, produto_id):
 @login_required
 def listar_produtos(request):
     perfil = get_object_or_404(Perfil, user=request.user)
-    
-    # Cantineiros veem apenas os produtos que eles criaram
+
     if perfil.role == 'cantineiro':
-        produtos = Produto.objects.filter(criado_por=perfil)
+        # ✅ Cantineiro só vê os produtos que ele mesmo criou
+        produtos = Produto.objects.filter(criado_por=request.user)
     else:
-        # Alunos e outros perfis veem todos os produtos
+        # ✅ Alunos e outros perfis veem todos
         produtos = Produto.objects.all()
 
     return render(request, 'produtos.html', {'produtos': produtos, 'perfil': perfil})
