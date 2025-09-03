@@ -1,0 +1,28 @@
+{% load static %}
+<h2>Meu Perfil</h2>
+
+<div class="perfil-container">
+  {% if usuario.foto %}
+    <img src="{{ usuario.foto.url }}" alt="Foto de perfil" class="foto-perfil">
+  {% else %}
+    <img src="{% static 'img/default_avatar.png' %}" alt="Foto padrão" class="foto-perfil">
+  {% endif %}
+
+  <p>Usuário: {{ usuario.user.username }}</p>
+  <p>Nome completo: {{ usuario.full_name }}</p>
+  <p>Data de cadastro: {{ usuario.date_joined|date:"d/m/Y" }}</p>
+  <p>Status: {% if usuario.is_active %}Ativo{% else %}Inativo{% endif %}</p>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </form>
+</div>
+
+<style>
+  .perfil-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; }
+  .foto-perfil { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
+  .btn { padding: 5px 15px; background: blue; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  .btn:hover { background: darkblue; }
+</style>

@@ -55,3 +55,34 @@ def listar_produtos(request):
         produtos = Produto.objects.all()
 
     return render(request, 'produtos.html', {'produtos': produtos, 'perfil': perfil})
+
+
+@login_required
+def adicionar_estoque(request, produto_id):
+    perfil = get_object_or_404(Perfil, user=request.user)
+    
+    if perfil.role != 'cantineiro':
+        return redirect('listar_produtos')
+    
+    produto = get_object_or_404(Produto, id=produto_id, criado_por=request.user)
+    produto.estoque += 1
+    produto.save()
+    
+    return redirect('listar_produtos')
+
+
+@login_required
+def remover_estoque(request, produto_id):
+    perfil = get_object_or_404(Perfil, user=request.user)
+    
+    if perfil.role != 'cantineiro':
+        return redirect('listar_produtos')
+    
+    produto = get_object_or_404(Produto, id=produto_id, criado_por=request.user)
+    
+    if produto.estoque > 0:
+        produto.estoque -= 1
+        produto.save()
+    
+    return redirect('listar_produtos')
+

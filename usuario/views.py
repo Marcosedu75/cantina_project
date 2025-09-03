@@ -1,17 +1,15 @@
 from django.shortcuts import render, redirect
-from .forms import CadastroForm, LoginForm
+from .forms import CadastroForm, LoginForm, UsuarioForm
 from django.contrib.auth import authenticate, login, logout
 from usuario.models import Usuario  # importando o modelo de perfil
 from django.contrib.auth.decorators import login_required
-
+from .models import Usuario
 
 
 
 def home_view(request):
     return render(request, 'home.html')
 
-def home_public(request):
-    return render(request, 'home.html')
 
 def cadastro_view(request):
     if request.method == 'POST':
@@ -68,5 +66,16 @@ def fazer_pedido(request):
 def listar(request):
     return redirect('listar_produtos') 
 
+@login_required
+def perfil_usuario(request):
+    usuario, created = Usuario.objects.get_or_create(user=request.user)
 
+    if request.method == 'POST':
+        form = UsuarioForm(request.POST, request.FILES, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil_usuario')
+    else:
+        form = UsuarioForm(instance=usuario)
 
+    return render(request, 'perfil.html', {'form': form, 'usuario': usuario})

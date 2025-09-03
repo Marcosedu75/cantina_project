@@ -1,14 +1,18 @@
-<!-- produto/templates/produtos.html -->
 <h2>Produtos Disponíveis</h2>
 
 <ul>
   {% for produto in produtos %}
     <li>
-      {{ produto.nome }} - R$ {{ produto.preco }}
+      {{ produto.nome }} - R$ {{ produto.preco }} - Estoque: {{ produto.estoque }}
       
-      {% if request.user.perfil.role == 'cantineiro' and produto.criado_por == request.user.perfil %}
-        <!-- Botão Editar só aparece para produtos criados pelo cantineiro -->
+      {% if request.user.perfil.role == 'cantineiro' and produto.criado_por == request.user %}
         <a href="{% url 'editar_produto' produto.id %}" class="btn btn-sm btn-warning">Editar</a>
+      {% endif %}
+      
+      <!-- Botões de estoque sempre visíveis -->
+      {% if request.user.perfil.role == 'cantineiro' %}
+        <a href="{% url 'adicionar_estoque' produto.id %}" class="btn btn-sm btn-success">+</a>
+        <a href="{% url 'remover_estoque' produto.id %}" class="btn btn-sm btn-danger">-</a>
       {% endif %}
     </li>
   {% empty %}
@@ -17,11 +21,9 @@
 </ul>
 
 {% if request.user.perfil.role == 'cantineiro' %}
-  <!-- Botão para criar novo produto -->
   <a href="{% url 'criar_produto' %}" class="btn btn-primary mt-3">Adicionar Produto</a>
 {% endif %}
 
-<!-- Botão Voltar -->
 <form action="{% url 'home' %}" method="get" style="margin-top: 10px;">
   <button type="submit" class="btn btn-secondary">Voltar</button>
 </form>

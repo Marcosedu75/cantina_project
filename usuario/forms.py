@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from .models import Perfil
+from .models import Usuario
 
 class CadastroForm(forms.ModelForm):
     ROLE_CHOICES = (
@@ -47,3 +48,8 @@ class CadastroForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(label='Usuário')
     password = forms.CharField(label='Senha', widget=forms.PasswordInput)
+
+class UsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['foto']
