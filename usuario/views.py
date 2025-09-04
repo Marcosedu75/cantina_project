@@ -79,3 +79,21 @@ def perfil_usuario(request):
         form = UsuarioForm(instance=usuario)
 
     return render(request, 'perfil.html', {'form': form, 'usuario': usuario})
+
+@login_required
+def deletar_conta(request):
+    if request.method == "POST":
+        confirm_text = request.POST.get("confirm_text", "").strip()
+        if confirm_text == "delete":
+            user = request.user
+            logout(request)
+            user.delete()
+            return redirect("home")
+        else:
+            # Retorna para a página de confirmação com erro
+            return render(request, "contadelete.html", {
+                "erro": "Você precisa digitar 'delete' para confirmar."
+            })
+
+    return render(request, "contadelete.html")
+    

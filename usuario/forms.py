@@ -6,19 +6,12 @@ from .models import Perfil
 from .models import Usuario
 
 class CadastroForm(forms.ModelForm):
-    ROLE_CHOICES = (
-        ('aluno', 'Aluno'),
-        ('cantineiro', 'Cantineiro'),
-    )
-
     password = forms.CharField(widget=forms.PasswordInput, label='Senha')
     password_confirm = forms.CharField(widget=forms.PasswordInput, label='Confirmar Senha')
-    role = forms.ChoiceField(choices=ROLE_CHOICES, label='Tipo de Usuário')
-
 
     class Meta:
         model = User
-        fields = ['username', 'email'] # Remova 'password' daqui, já que o campo personalizado foi adicionado
+        fields = ['username', 'email']  # Não precisamos de 'role'
 
     def clean_password_confirm(self):
         password = self.cleaned_data.get('password')
@@ -29,17 +22,15 @@ class CadastroForm(forms.ModelForm):
         return password_confirm
 
     def save(self, commit=True):
-        # Cria o usuário
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
 
         if commit:
             user.save()
-
-            # Cria o perfil associado com a role
+            # Cria o perfil sempre como aluno
             Perfil.objects.create(
                 user=user,
-                role=self.cleaned_data['role']
+                role='aluno'
             )
 
         return user

@@ -17,6 +17,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{% url 'deletar_conta' %}" class="btn btn-danger">Deletar Conta</a>
   </form>
 </div>
 

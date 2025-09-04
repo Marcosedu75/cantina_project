@@ -1,7 +1,7 @@
 # usuario/urls.py
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import cadastro_view, home_view, login_view, login_redirect_view, logout_view, gerenciar_pedidos_view, produtos, fazer_pedido, perfil_usuario
+from .views import cadastro_view, home_view, login_view, login_redirect_view, logout_view, gerenciar_pedidos_view, produtos, fazer_pedido, perfil_usuario, deletar_conta
 from django.contrib.auth.views import LogoutView
 
 
@@ -15,7 +15,7 @@ urlpatterns = [
     path('produtos/', produtos, name='produtos'),
     path('fazerpedido/', fazer_pedido, name='fazer_pedido'),
     path('perfil/', perfil_usuario, name='perfil_usuario'),
-
+    path('deletarconta/', deletar_conta, name='deletar_conta')
 
 ]
 
