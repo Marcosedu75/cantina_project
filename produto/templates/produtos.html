@@ -5,7 +5,7 @@
     <li>
       {{ produto.nome }} - R$ {{ produto.preco }} - Estoque: {{ produto.estoque }}
       
-      {% if request.user.perfil.role == 'cantineiro' and produto.criado_por == request.user %}
+      {% if request.user.perfil.role == 'cantineiro' %}
         <a href="{% url 'editar_produto' produto.id %}" class="btn btn-sm btn-warning">Editar</a>
       {% endif %}
       

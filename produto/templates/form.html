@@ -13,6 +13,10 @@
       
               <button type="submit">Salvar</button>
           </form>
+          <!-- Botão de excluir -->
+        {% if produto and produto.id %}
+          <a href="{% url 'deletar_produto' produto.id %}">Deletar</a>
+        {% endif %}
       
           <form action="{% url 'listar_produtos' %}" method="get">
               <button type="submit">Cancelar / Voltar</button>

@@ -4,24 +4,16 @@ from .forms import ProdutoForm
 from usuario.models import Perfil
 from django.contrib.auth.decorators import login_required
 
-@login_required
 def criar_produto(request):
-    perfil = get_object_or_404(Perfil, user=request.user)
-
-    if perfil.role != 'cantineiro':
+    form = ProdutoForm(request.POST or None)
+    produto = None  # garante que existe mesmo se GET
+    
+    if form.is_valid():
+        produto = form.save()
         return redirect('listar_produtos')
+    
+    return render(request, 'form.html', {'form': form, 'titulo': 'Editar Produto', 'produto': produto})
 
-    if request.method == 'POST':
-        form = ProdutoForm(request.POST)
-        if form.is_valid():
-            produto = form.save(commit=False)
-            produto.criado_por = request.user  # ✅ agora associa ao User
-            produto.save()
-            return redirect('listar_produtos')
-    else:
-        form = ProdutoForm()
-
-    return render(request, 'form.html', {'form': form, 'titulo': 'Criar Produto'})
 
 @login_required
 def editar_produto(request, produto_id):
@@ -30,8 +22,7 @@ def editar_produto(request, produto_id):
     if perfil.role != 'cantineiro':
         return redirect('listar_produtos')
 
-    # Garante que o cantineiro só possa editar seus próprios produtos
-    produto = get_object_or_404(Produto, id=produto_id, criado_por=request.user)
+    produto = get_object_or_404(Produto, id=produto_id)
 
     if request.method == 'POST':
         form = ProdutoForm(request.POST, instance=produto)
@@ -41,7 +32,13 @@ def editar_produto(request, produto_id):
     else:
         form = ProdutoForm(instance=produto)
 
-    return render(request, 'form.html', {'form': form, 'titulo': 'Editar Produto'})
+    # Adicione o produto no contexto para o template
+    return render(request, 'form.html', {
+        'form': form,
+        'titulo': 'Editar Produto',
+        'produto': produto
+    })
+
 
 @login_required
 def listar_produtos(request):
@@ -49,7 +46,7 @@ def listar_produtos(request):
 
     if perfil.role == 'cantineiro':
         # ✅ Cantineiro só vê os produtos que ele mesmo criou
-        produtos = Produto.objects.filter(criado_por=request.user)
+        produtos = Produto.objects.all()
     else:
         # ✅ Alunos e outros perfis veem todos
         produtos = Produto.objects.all()
@@ -64,7 +61,8 @@ def adicionar_estoque(request, produto_id):
     if perfil.role != 'cantineiro':
         return redirect('listar_produtos')
     
-    produto = get_object_or_404(Produto, id=produto_id, criado_por=request.user)
+    # Agora qualquer cantineiro pode adicionar estoque em qualquer produto
+    produto = get_object_or_404(Produto, id=produto_id)
     produto.estoque += 1
     produto.save()
     
@@ -78,7 +76,8 @@ def remover_estoque(request, produto_id):
     if perfil.role != 'cantineiro':
         return redirect('listar_produtos')
     
-    produto = get_object_or_404(Produto, id=produto_id, criado_por=request.user)
+    # Agora qualquer cantineiro pode remover estoque de qualquer produto
+    produto = get_object_or_404(Produto, id=produto_id)
     
     if produto.estoque > 0:
         produto.estoque -= 1
@@ -86,3 +85,17 @@ def remover_estoque(request, produto_id):
     
     return redirect('listar_produtos')
 
+@login_required
+def deletar_produto(request, produto_id):
+    perfil = get_object_or_404(Perfil, user=request.user)
+    
+    if perfil.role != 'cantineiro':
+        return redirect('listar_produtos')
+    
+    produto = get_object_or_404(Produto, id=produto_id)
+    
+    if request.method == "POST":
+        produto.delete()
+        return redirect('listar_produtos')
+    
+    return render(request, 'confirm_delete.html', {'produto': produto})
