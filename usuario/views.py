@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import CadastroForm, LoginForm, UsuarioForm
 from django.contrib.auth import authenticate, login, logout
-from usuario.models import Usuario  # importando o modelo de perfil
 from django.contrib.auth.decorators import login_required
 from .models import Usuario
 

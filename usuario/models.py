@@ -15,10 +15,13 @@ class Perfil(models.Model):
 
 class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    foto = models.ImageField(upload_to='user_fotos/', null=True)
-
-    def __str__(self):
-        return self.user.username
+    foto = models.ImageField(
+        upload_to='user_fotos/',
+        null=True,
+        blank=True,
+        default='user_fotos/default.jpg'
+    )
+    default='user_fotos/default.jpg'
 
     # Retorna o nome completo do usuário
     @property
