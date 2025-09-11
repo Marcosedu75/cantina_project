@@ -5,7 +5,7 @@
   {% if usuario.foto %}
     <img src="{{ usuario.foto.url }}" alt="Foto de perfil" class="foto-perfil">
   {% else %}
-    <img src="{% static 'img/default_avatar.png' %}" alt="Foto padrão" class="foto-perfil">
+    <img src="{% static 'img/default.jpg' %}" alt="Foto padrão" class="foto-perfil">
   {% endif %}
 
   <p>Usuário: {{ usuario.user.username }}</p>

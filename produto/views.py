@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto
 from .forms import ProdutoForm
-from usuario.models import Perfil
+from usuario.models import Usuario
 from django.contrib.auth.decorators import login_required
 
 def criar_produto(request):
@@ -17,9 +17,9 @@ def criar_produto(request):
 
 @login_required
 def editar_produto(request, produto_id):
-    perfil = get_object_or_404(Perfil, user=request.user)
+    usuario = get_object_or_404(Usuario, user=request.user)
 
-    if perfil.role != 'cantineiro':
+    if usuario.role != 'cantineiro':
         return redirect('listar_produtos')
 
     produto = get_object_or_404(Produto, id=produto_id)
@@ -42,23 +42,23 @@ def editar_produto(request, produto_id):
 
 @login_required
 def listar_produtos(request):
-    perfil = get_object_or_404(Perfil, user=request.user)
+    usuario = get_object_or_404(Usuario, user=request.user)
 
-    if perfil.role == 'cantineiro':
+    if usuario.role == 'cantineiro':
         # ✅ Cantineiro só vê os produtos que ele mesmo criou
         produtos = Produto.objects.all()
     else:
         # ✅ Alunos e outros perfis veem todos
         produtos = Produto.objects.all()
 
-    return render(request, 'produtos.html', {'produtos': produtos, 'perfil': perfil})
+    return render(request, 'produtos.html', {'produtos': produtos, 'perfil': usuario})
 
 
 @login_required
 def adicionar_estoque(request, produto_id):
-    perfil = get_object_or_404(Perfil, user=request.user)
+    usuario = get_object_or_404(Usuario, user=request.user)
     
-    if perfil.role != 'cantineiro':
+    if usuario.role != 'cantineiro':
         return redirect('listar_produtos')
     
     # Agora qualquer cantineiro pode adicionar estoque em qualquer produto
@@ -71,9 +71,9 @@ def adicionar_estoque(request, produto_id):
 
 @login_required
 def remover_estoque(request, produto_id):
-    perfil = get_object_or_404(Perfil, user=request.user)
+    usuario = get_object_or_404(Usuario, user=request.user)
     
-    if perfil.role != 'cantineiro':
+    if usuario.role != 'cantineiro':
         return redirect('listar_produtos')
     
     # Agora qualquer cantineiro pode remover estoque de qualquer produto
@@ -87,9 +87,9 @@ def remover_estoque(request, produto_id):
 
 @login_required
 def deletar_produto(request, produto_id):
-    perfil = get_object_or_404(Perfil, user=request.user)
+    usuario = get_object_or_404(Usuario, user=request.user)
     
-    if perfil.role != 'cantineiro':
+    if usuario.role != 'cantineiro':
         return redirect('listar_produtos')
     
     produto = get_object_or_404(Produto, id=produto_id)

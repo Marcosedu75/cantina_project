@@ -5,12 +5,12 @@
     <li>
       {{ produto.nome }} - R$ {{ produto.preco }} - Estoque: {{ produto.estoque }}
       
-      {% if request.user.perfil.role == 'cantineiro' %}
+      {% if request.user.usuario.role == 'cantineiro' %}
         <a href="{% url 'editar_produto' produto.id %}" class="btn btn-sm btn-warning">Editar</a>
       {% endif %}
       
       <!-- Botões de estoque sempre visíveis -->
-      {% if request.user.perfil.role == 'cantineiro' %}
+      {% if request.user.usuario.role == 'cantineiro' %}
         <a href="{% url 'adicionar_estoque' produto.id %}" class="btn btn-sm btn-success">+</a>
         <a href="{% url 'remover_estoque' produto.id %}" class="btn btn-sm btn-danger">-</a>
       {% endif %}
@@ -20,7 +20,7 @@
   {% endfor %}
 </ul>
 
-{% if request.user.perfil.role == 'cantineiro' %}
+{% if request.user.usuario.role == 'cantineiro' %}
   <a href="{% url 'criar_produto' %}" class="btn btn-primary mt-3">Adicionar Produto</a>
 {% endif %}
 

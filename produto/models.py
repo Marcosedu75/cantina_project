@@ -1,5 +1,4 @@
 from django.db import models
-from usuario.models import Perfil
 from django.contrib.auth.models import User
 
 class Categoria(models.Model):

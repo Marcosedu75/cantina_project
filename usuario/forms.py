@@ -2,7 +2,6 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .models import Perfil
 from .models import Usuario
 
 class CadastroForm(forms.ModelForm):
@@ -28,7 +27,7 @@ class CadastroForm(forms.ModelForm):
         if commit:
             user.save()
             # Cria o perfil sempre como aluno
-            Perfil.objects.create(
+            Usuario.objects.create(
                 user=user,
                 role='aluno'
             )
