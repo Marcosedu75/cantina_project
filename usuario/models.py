@@ -7,22 +7,17 @@ class Usuario(models.Model):
         ('aluno', 'Aluno'),
         ('cantineiro', 'Cantineiro'),
     )
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    foto = models.ImageField(
-        upload_to='user_fotos/',
-        default='user_fotos/default.jpg'
-    )
 
-    # Retorna o nome completo do usuário
-    @property
+  
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    foto = models.ImageField(upload_to='fotos_perfil/', blank=True)
     def full_name(self):
         return self.user.get_full_name()
     
     def is_active(self):
         return self.user.is_active
 
-    # Retorna a data que o usuário se cadastrou
     @property
     def date_joined(self):
         return self.user.date_joined

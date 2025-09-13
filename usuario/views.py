@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from usuario.models import Usuario
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt # REMOVER DA PRODUÇÃO - USAR EM DEBUG APENAS
-
+from django.contrib.auth.models import User
 
 
 def home_view(request):
@@ -22,32 +22,42 @@ def cadastro_view(request):
         form = CadastroForm()
     return render(request, 'cadastro.html', {'form': form})
 
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
+
+
 @csrf_exempt
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = authenticate(
-                request,
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password']
-            )
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            
+            try:
+                user_obj = Usuario.objects.filter(user__email=email).first()
+                if user_obj:
+                    user = authenticate(request, username=user_obj.user.username, password=password)
+                else:
+                    user = None
+            except Exception:
+                user = None
+
             if user is not None:
                 login(request, user)
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'success': True, 'message': 'Login realizado com sucesso!'})
-                return redirect('home')  # ou redirecionar por tipo de perfil
+                return redirect('home')
             else:
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'message': 'Usuário ou senha invalidos'})
-                form.add_error(None, 'Usuário ou senha inválidos.')
-            
-                
+                    return JsonResponse({'success': False, 'message': 'Email ou senha inválidos'})
+                form.add_error(None, 'Email ou senha inválidos.')
     else:
         form = LoginForm()
-
-            
-    
     return render(request, 'login.html', {'form': form})
 
 
