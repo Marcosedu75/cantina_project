@@ -18,4 +18,7 @@
   {{ form.as_p }}
   <button type="submit">Salvar</button>
 </form>
+<form action="{% url 'home' %}" method="get">
+  <button type="submit" class="btn btn-primary">Voltar</button>
+</form>
 <a href="{% url 'deletar_conta' %}" class="btn btn-danger">Deletar Conta</a>

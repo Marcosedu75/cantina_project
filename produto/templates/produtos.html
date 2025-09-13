@@ -1,5 +1,10 @@
 <h2>Produtos Disponíveis</h2>
 
+<form method="get" action="" style="margin-bottom: 15px;">
+    <input type="text" name="q" placeholder="Buscar produto..." value="{{ query }}">
+    <button type="submit">Buscar</button>
+</form>
+
 <ul>
   {% for produto in produtos %}
     <li>
@@ -11,8 +16,8 @@
       
       <!-- Botões de estoque sempre visíveis -->
       {% if request.user.usuario.role == 'cantineiro' %}
-        <a href="{% url 'adicionar_estoque' produto.id %}" class="btn btn-sm btn-success">+</a>
-        <a href="{% url 'remover_estoque' produto.id %}" class="btn btn-sm btn-danger">-</a>
+        <a href="{% url 'adicionar_estoque' produto.id %}{% if query %}?q={{ query }}{% endif %}" class="btn btn-sm btn-success">+</a>
+        <a href="{% url 'remover_estoque' produto.id %}{% if query %}?q={{ query }}{% endif %}" class="btn btn-sm btn-danger">-</a>
       {% endif %}
     </li>
   {% empty %}

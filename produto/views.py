@@ -3,6 +3,8 @@ from .models import Produto
 from .forms import ProdutoForm
 from usuario.models import Usuario
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from urllib.parse import urlencode
 
 def criar_produto(request):
     form = ProdutoForm(request.POST or None)
@@ -43,47 +45,49 @@ def editar_produto(request, produto_id):
 @login_required
 def listar_produtos(request):
     usuario = get_object_or_404(Usuario, user=request.user)
+    query = request.GET.get('q', '')
 
     if usuario.role == 'cantineiro':
-        # ✅ Cantineiro só vê os produtos que ele mesmo criou
         produtos = Produto.objects.all()
     else:
-        # ✅ Alunos e outros perfis veem todos
         produtos = Produto.objects.all()
 
-    return render(request, 'produtos.html', {'produtos': produtos, 'perfil': usuario})
+    if query:
+        produtos = produtos.filter(nome__icontains=query)
 
+    return render(request, 'produtos.html', {'produtos': produtos, 'perfil': usuario, 'query': query})
+    
 
 @login_required
 def adicionar_estoque(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
-    
     if usuario.role != 'cantineiro':
         return redirect('listar_produtos')
-    
-    # Agora qualquer cantineiro pode adicionar estoque em qualquer produto
     produto = get_object_or_404(Produto, id=produto_id)
     produto.estoque += 1
     produto.save()
-    
-    return redirect('listar_produtos')
 
+    q = request.GET.get('q')
+    url = reverse('listar_produtos')
+    if q:
+        url += '?' + urlencode({'q': q})
+    return redirect(url)
 
 @login_required
 def remover_estoque(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
-    
     if usuario.role != 'cantineiro':
         return redirect('listar_produtos')
-    
-    # Agora qualquer cantineiro pode remover estoque de qualquer produto
     produto = get_object_or_404(Produto, id=produto_id)
-    
     if produto.estoque > 0:
         produto.estoque -= 1
         produto.save()
-    
-    return redirect('listar_produtos')
+
+    q = request.GET.get('q')
+    url = reverse('listar_produtos')
+    if q:
+        url += '?' + urlencode({'q': q})
+    return redirect(url)
 
 @login_required
 def deletar_produto(request, produto_id):

@@ -1,6 +1,19 @@
 <html lang="pt-br">
 <h2>Produtos Cadastrados</h2>
 
+<form method="get" action="">
+    <input type="text" name="q" placeholder="Buscar produto..." value="{{ request.GET.q }}">
+    <button type="submit">Buscar</button>
+</form>
+
+<ul>
+  {% for produto in produtos %}
+    <li>{{ produto.nome }}</li>
+  {% empty %}
+    <li>Nenhum produto encontrado.</li>
+  {% endfor %}
+</ul>
+
 <ul>
   {% for produto in produtos %}
     <li>{{ produto.nome }} - R$ {{ produto.preco }}</li>
