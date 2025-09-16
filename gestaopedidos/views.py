@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import AtualizarStatusForm
 
 @login_required
-def listar_pedidos(request):
+def listar(request):
     usuario = get_object_or_404(Usuario, user=request.user)
     if usuario.role != 'cantineiro':
         return redirect('home')
@@ -46,3 +46,15 @@ def deletar_pedido(request, pedido_id):
         pedido.delete()
         return redirect('listar_pedidos')
     return render(request, 'delete.html', {'pedido': pedido})
+
+    #aluno
+
+
+def listar_pedidos(request):
+    return render(request, 'listar_pedidos.html')
+
+def criar_pedidos(request):
+    return render(request, 'criar_pedidos.html')
+
+def historico_pedidos(request):
+    return render(request, 'historico_pedidos.html')

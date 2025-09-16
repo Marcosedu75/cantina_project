@@ -1,17 +1,56 @@
 <!-- home.html -->
-{% extends 'base.html' %}
-{% block content %}
-  <h1>Bem-vindo, {{ request.user.username }}!</h1>
+
+
 
   {% if request.user.usuario.role == 'aluno' %}
-    <p>Você pode fazer pedidos na cantina e acompanhar o status.</p>
-    <a href="#">Fazer Pedido</a>
+ 
+  
+  {% block header %}
+  <h1>Cantina do Aluno</h1>
+  {% endblock %}
+  
+  {% block main %}
+  <section>
+      <h2>Bem-vindo ao seu painel, {{ user.get_full_name|default:user.username }}!</h2>
+      <p>O que você deseja fazer?</p>
+      <ul>
+          <li>
+              <a href="{% url 'listar_pedidos' %}">
+                  <button type="button">Ver Cardápio</button>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'criar_pedidos' %}">
+                  <button type="button">Fazer Pedido</button>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'historico_pedidos' %}">
+                  <button type="button">Ver Histórico de Pedidos</button>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'logout' %}">
+                  <button type="button">Sair da Conta</button>
+              </a>
+          </li>
+          <li>
+            <a href="{% url 'usuario' %}">
+              <button type="button">Meu perfil</button>
+            </a>
+          </li>
+      </ul>
+  </section>
+  {% endblock %}
   {% elif request.user.usuario.role == 'cantineiro' %}
-    <p>Você pode gerenciar os pedidos e editar os produtos disponíveis.</p>
+  <h2>Bem-vindo ao seu painel, {{ user.get_full_name|default:user.username }}!</h2>
+  <p>Você pode gerenciar os pedidos e editar os produtos disponíveis.</p>
+  <p>O que você deseja fazer?</p>
+    
   <!--  <li><a href="#">Gerenciar cardápio</a></li> -->
   <!--  <li><a href="#">Relatórios de consumo</a></li> -->
-    <li><a href="{% url 'listar_pedidos' %}">Ver Pedidos</a></li>
+    <li><a href="{% url 'listar' %}">Ver Pedidos</a></li>
     <li><a href="{% url 'listar_produtos' %}">Editar Produtos</a></li>
     <li><a href="{% url 'usuario' %}">Meu perfil</a></li>
   {% endif %}
-{% endblock %}
+
