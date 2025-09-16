@@ -1,0 +1,7 @@
+<h2>Atualizar Status do Pedido #{{ pedido.id }}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Salvar</button>
+</form>
+<a href="{% url 'listar_pedidos' %}">Voltar</a>

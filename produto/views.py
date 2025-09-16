@@ -50,7 +50,7 @@ def listar_produtos(request):
     if usuario.role == 'cantineiro':
         produtos = Produto.objects.all()
     else:
-        produtos = Produto.objects.all()
+        produtos = Produto.objects.filter(estoque__gt=0)
 
     if query:
         produtos = produtos.filter(nome__icontains=query)

@@ -1,0 +1,11 @@
+<h2>Detalhes do Pedido #{{ pedido.id }}</h2>
+<p>Usuário: {{ pedido.usuario.get_full_name }}</p>
+<p>Status: {{ pedido.get_status_display }}</p>
+<p>Pagamento: {{ pedido.get_pagamento_display }}</p>
+<p>Valor total: R$ {{ pedido.valor_total }}</p>
+<ul>
+  {% for item in itens %}
+    <li>{{ item.quantidade }}x {{ item.produto.nome }} (R$ {{ item.preco_unitario }})</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'listar_pedidos' %}">Voltar</a>
