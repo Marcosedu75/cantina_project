@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Cantina{% endblock %}</title>
+    <title>
+        {% block title %}Cantina Escolar{% endblock %}
+    </title>
+    
 </head>
 <body>
-    <!-- Navbar -->
+
+    <!-- Navbar fixa -->
     <nav>
         <div>
-            <a href="{% url 'home' %}">Cantina</a>
+            <a href="{% url 'home' %}">🏫 Cantina Escolar</a>
             <ul>
                 {% if user.is_authenticated %}
-                    <li>Olá, {{ user.username }}</li>
+                    <li>Olá, {{ user.get_full_name|default:user.username }}</li>
+                    <li><a href="{% url 'usuario' %}">Meu Perfil</a></li>
                     <li><a href="{% url 'logout' %}">Sair</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Entrar</a></li>
@@ -22,38 +27,31 @@
         </div>
     </nav>
 
+    <!-- Header específico da página -->
+    <header>
+        {% block header %}{% endblock %}
+    </header>
 
-    <!-- Mensagens -->
-    <div>
+    <!-- Mensagens do sistema -->
+    <section>
         {% if messages %}
             {% for message in messages %}
-                <div>
-                    {{ message }}
-                </div>
+                <div class="alert {{ message.tags }}">{{ message }}</div>
             {% endfor %}
         {% endif %}
-    </div>
-
+    </section>
 
     <!-- Conteúdo principal -->
-    <div>
-        {% block content %}
-        {% endblock %}
-    </div>
+    <main>
+        {% block main %}{% endblock %}
+    </main>
 
-
-    <!-- Footer -->
+    <!-- Rodapé -->
     <footer>
+        {% block footer %}
         <p>&copy; 2025 Cantina Escolar - Todos os direitos reservados</p>
+        {% endblock %}
     </footer>
 
-
-
-
-
-    
 </body>
 </html>
-
-
-

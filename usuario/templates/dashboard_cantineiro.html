@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Painel do Cantineiro{% endblock %}
+
+{% block main %}
+<h1>Painel do Cantineiro</h1>
+<p>Bem-vindo, {{ usuario.user.get_full_name|default:usuario.user.username }}!</p>
+
+<section>
+  <ul>
+    <li>
+      <a href="{% url 'listar' %}">
+        <button>📦 Gerenciar Pedidos</button>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'listar_produtos' %}">
+        <button>🛒 Editar Produtos</button>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'usuario' %}">
+        <button>👤 Meu Perfil</button>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'logout' %}">
+        <button>🚪 Sair</button>
+      </a>
+    </li>
+  </ul>
+</section>
+{% endblock %}
+

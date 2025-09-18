@@ -1,56 +1,12 @@
-<!-- home.html -->
+{% extends 'base.html' %}
 
+{% block title %}Cantina Escolar{% endblock %}
 
+{% block content %}
+  <p>Faça login para acessar seu painel personalizado.</p>
+  <p>Bem vindo a cantina online, aqui você pode realizar pedidos, acompanhar os status do seu pedido, e além do mais, não enfrentar filas</p>
 
-  {% if request.user.usuario.role == 'aluno' %}
- 
-  
-  {% block header %}
-  <h1>Cantina do Aluno</h1>
-  {% endblock %}
-  
-  {% block main %}
-  <section>
-      <h2>Bem-vindo ao seu painel, {{ user.get_full_name|default:user.username }}!</h2>
-      <p>O que você deseja fazer?</p>
-      <ul>
-          <li>
-              <a href="{% url 'listar_pedidos' %}">
-                  <button type="button">Ver Cardápio</button>
-              </a>
-          </li>
-          <li>
-              <a href="{% url 'criar_pedidos' %}">
-                  <button type="button">Fazer Pedido</button>
-              </a>
-          </li>
-          <li>
-              <a href="{% url 'historico_pedidos' %}">
-                  <button type="button">Ver Histórico de Pedidos</button>
-              </a>
-          </li>
-          <li>
-              <a href="{% url 'logout' %}">
-                  <button type="button">Sair da Conta</button>
-              </a>
-          </li>
-          <li>
-            <a href="{% url 'usuario' %}">
-              <button type="button">Meu perfil</button>
-            </a>
-          </li>
-      </ul>
-  </section>
-  {% endblock %}
-  {% elif request.user.usuario.role == 'cantineiro' %}
-  <h2>Bem-vindo ao seu painel, {{ user.get_full_name|default:user.username }}!</h2>
-  <p>Você pode gerenciar os pedidos e editar os produtos disponíveis.</p>
-  <p>O que você deseja fazer?</p>
+  <a href="{% url 'login' %}">Faça seu pedido já!</a>
     
-  <!--  <li><a href="#">Gerenciar cardápio</a></li> -->
-  <!--  <li><a href="#">Relatórios de consumo</a></li> -->
-    <li><a href="{% url 'listar' %}">Ver Pedidos</a></li>
-    <li><a href="{% url 'listar_produtos' %}">Editar Produtos</a></li>
-    <li><a href="{% url 'usuario' %}">Meu perfil</a></li>
-  {% endif %}
-
+  
+{% endblock %}

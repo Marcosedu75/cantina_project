@@ -9,8 +9,35 @@ from django.contrib.auth.models import User
 
 
 def home_view(request):
+    
     return render(request, 'home.html')
 
+@login_required
+def login_redirect_view(request):
+    usuario = Usuario.objects.filter(user=request.user).first()
+
+    if usuario:
+        if usuario.role == 'aluno':
+            return redirect('painel_usuario')  # ou 'home_aluno'
+        elif usuario.role == 'cantineiro':
+            return redirect('listar')
+    
+    return redirect('home') 
+
+@login_required
+def dashboard_cantineiro(request):
+    usuario = Usuario.objects.filter(user=request.user).first()
+    if not usuario or usuario.role != 'cantineiro':
+        return redirect('home')
+    return render(request, 'dashboard_cantineiro.html', {'usuario': usuario})
+
+#Integração código do Rian
+@login_required(login_url='login')
+def painel_usuario(request):
+    """
+    Exibe o painel do usuário. Acessível apenas para usuários logados.
+    """
+    return render(request, 'painel_usuario.html')
 
 def cadastro_view(request):
     if request.method == 'POST':
@@ -22,12 +49,6 @@ def cadastro_view(request):
         form = CadastroForm()
     return render(request, 'cadastro.html', {'form': form})
 
-from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from .forms import LoginForm
 
 
 @csrf_exempt
@@ -51,7 +72,7 @@ def login_view(request):
                 login(request, user)
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'success': True, 'message': 'Login realizado com sucesso!'})
-                return redirect('home')
+                return redirect('login_redirect')
             else:
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'success': False, 'message': 'Email ou senha inválidos'})

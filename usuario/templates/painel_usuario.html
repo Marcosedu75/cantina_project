@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+Painel do Aluno
+{% endblock %}
+
+{% block header %}
+<h1>Cantina do Aluno</h1>
+{% endblock %}
+
+{% block main %}
+<section>
+    <h2>Bem-vindo ao seu painel, {{ user.get_full_name|default:user.username }}!</h2>
+    <p>O que você deseja fazer?</p>
+    <ul>
+        <li>
+            <a href="{% url 'listar_pedidos' %}">
+                <button type="button">Ver Cardápio</button>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'criar_pedidos' %}">
+                <button type="button">Fazer Pedido</button>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'historico_pedidos' %}">
+                <button type="button">Ver Histórico de Pedidos</button>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'logout' %}">
+                <button type="button">Sair da Conta</button>
+            </a>
+        </li>
+    </ul>
+</section>
+{% endblock %}
+
+{% block footer %}
+<p>© 2025 Cantina do Aluno</p>
+{% endblock %}
