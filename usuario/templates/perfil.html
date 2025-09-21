@@ -18,7 +18,17 @@
   {{ form.as_p }}
   <button type="submit">Salvar</button>
 </form>
-<form action="{% url 'login_redirect' %}" method="get">
-  <button type="submit" class="btn btn-primary">Voltar</button>
+
+{% if request.user.usuario.role == 'cantineiro' %}
+  <form action="{% url 'dashboard_cantineiro' %}" method="get" style="display: inline;">
+    <button type="submit">Voltar</button>
+  </form>
+{% elif request.user.usuario.role == 'aluno' %}
+  <form action="{% url 'painel_usuario' %}" method="get" style="display: inline;">
+    <button type="submit">Voltar</button>
+  </form>
+{% endif %}
+
+<form action="{% url 'deletar_conta' %}" method="get" style="display: inline;">
+  <button type="submit">Deletar Conta</button>
 </form>
-<a href="{% url 'deletar_conta' %}" class="btn btn-danger">Deletar Conta</a>

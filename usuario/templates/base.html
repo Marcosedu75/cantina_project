@@ -13,7 +13,15 @@
     <!-- Navbar fixa -->
     <nav>
         <div>
-            <a href="{% url 'home' %}">🏫 Cantina Escolar</a>
+            {% if user.is_authenticated %}
+                {% if user.usuario.role == 'cantineiro' %}
+                    <a href="{% url 'dashboard_cantineiro' %}">🏫 Cantina Escolar</a>
+                {% elif user.usuario.role == 'aluno' %}
+                    <a href="{% url 'painel_usuario' %}">🏫 Cantina Escolar</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'home' %}">🏫 Cantina Escolar</a>
+            {% endif %}
             <ul>
                 {% if user.is_authenticated %}
                     <li>Olá, {{ user.get_full_name|default:user.username }}</li>

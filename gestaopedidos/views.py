@@ -4,19 +4,19 @@ from usuario.models import Usuario
 from django.contrib.auth.decorators import login_required
 from .forms import AtualizarStatusForm
 
-DUMMY_PEDIDOS = {
-    'pedido1': {
-        'id': 1,
-        'itens': [],
-        'total': 10.00,
-    },
-    'pedido2': {
-        'nome': 'marcos',
-        'id': 2,
-        'itens': [],
-        'total': 20.00, },
+# DUMMY_PEDIDOS = {
+#     'pedido1': {
+#         'id': 1,
+#         'itens': [],
+#         'total': 10.00,
+#     },
+#     'pedido2': {
+#         'nome': 'marcos',
+#         'id': 2,
+#         'itens': [],
+#         'total': 20.00, },
 
-}
+# }
 
 @login_required
 def listar_pedidos(request):
@@ -46,7 +46,7 @@ def atualizar_status(request, pedido_id):
         form = AtualizarStatusForm(request.POST, instance=pedido)
         if form.is_valid():
             form.save()
-            return redirect('listar_pedidos')
+            return redirect('listar')
     else:
         form = AtualizarStatusForm(instance=pedido)
     return render(request, 'atualizar_status.html', {'form': form, 'pedido': pedido})
@@ -59,7 +59,7 @@ def deletar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     if request.method == 'POST':
         pedido.delete()
-        return redirect('listar_pedidos')
+        return redirect('listar')
     return render(request, 'delete.html', {'pedido': pedido})
 
     #aluno

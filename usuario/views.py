@@ -18,7 +18,7 @@ def login_redirect_view(request):
 
     if usuario:
         if usuario.role == 'aluno':
-            return redirect('painel_usuario')  # ou 'home_aluno'
+            return redirect('criar_pedidos')  # ou 'home_aluno'
         elif usuario.role == 'cantineiro':
             return redirect('listar')
     
