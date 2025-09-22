@@ -39,4 +39,11 @@ class ItemPedido(models.Model):
     def __str__(self):
         return f"{self.quantidade}x {self.produto.nome} (Pedido {self.pedido.id})"
 
-# Create your models here.
+    def delete(self, *args, **kwargs):
+        # Devolve a quantidade ao estoque do produto antes de deletar o item
+        self.produto.estoque += self.quantidade
+        self.produto.save()
+        # Chama o método delete original
+        super().delete(*args, **kwargs)
+
+

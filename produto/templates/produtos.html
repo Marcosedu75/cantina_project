@@ -8,6 +8,12 @@
 <ul>
   {% for produto in produtos %}
     <li>
+      {% if produto.foto %}
+        <img src="{{ produto.foto.url }}" alt="Foto de {{ produto.nome }}" width="100" style="margin-right: 15px; vertical-align: middle;">
+      {% else %}
+        <img src="https://via.placeholder.com/100" alt="Sem foto" width="100" style="margin-right: 15px; vertical-align: middle;">
+      {% endif %}
+
       {{ produto.nome }} - R$ {{ produto.preco }} - Estoque: {{ produto.estoque }}
       
       {% if request.user.usuario.role == 'cantineiro' %}

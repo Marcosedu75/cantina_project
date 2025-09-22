@@ -7,7 +7,12 @@
       <body>
           <h2>{{ titulo }}</h2>
       
-          <form method="post">
+          {% if titulo == 'Editar Produto' and produto.foto %}
+            <p>Foto Atual:</p>
+            <img src="{{ produto.foto.url }}" alt="Foto de {{ produto.nome }}" width="150" style="margin-bottom: 15px;">
+          {% endif %}
+
+          <form method="post" enctype="multipart/form-data">
               {% csrf_token %}
               {{ form.as_p }}
       

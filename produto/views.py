@@ -7,14 +7,17 @@ from django.urls import reverse
 from urllib.parse import urlencode
 
 def criar_produto(request):
-    form = ProdutoForm(request.POST or None)
-    produto = None  # garante que existe mesmo se GET
-    
-    if form.is_valid():
-        produto = form.save()
-        return redirect('listar_produtos')
-    
-    return render(request, 'form.html', {'form': form, 'titulo': 'Editar Produto', 'produto': produto})
+    if request.method == 'POST':
+        # Para upload de arquivos, é crucial passar request.FILES
+        form = ProdutoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_produtos')
+    else:
+        form = ProdutoForm()
+
+    # O título deve ser 'Criar Produto' aqui
+    return render(request, 'form.html', {'form': form, 'titulo': 'Criar Produto'})
 
 
 @login_required
@@ -27,7 +30,8 @@ def editar_produto(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
 
     if request.method == 'POST':
-        form = ProdutoForm(request.POST, instance=produto)
+        # Também precisa de request.FILES para o caso de a foto ser alterada
+        form = ProdutoForm(request.POST, request.FILES, instance=produto)
         if form.is_valid():
             form.save()
             return redirect('listar_produtos')

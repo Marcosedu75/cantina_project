@@ -58,9 +58,16 @@ def deletar_pedido(request, pedido_id):
         return redirect('home')
     pedido = get_object_or_404(Pedido, id=pedido_id)
     if request.method == 'POST':
+        # Itera sobre cada item do pedido e chama o método .delete() de cada um.
+        # Isso garante que a sua lógica customizada em ItemPedido.delete() seja executada.
+        for item in pedido.itens.all():
+            item.delete()
+
+        # Agora que os itens foram removidos e o estoque devolvido,
+        # podemos deletar o objeto Pedido, que agora está vazio.
         pedido.delete()
         return redirect('listar')
-    return render(request, 'delete.html', {'pedido': pedido})
+    return render(request, 'pedido/delete.html', {'pedido': pedido})
 
     #aluno
 
