@@ -38,3 +38,5 @@ class ItemPedido(models.Model):
 
     def __str__(self):
         return f"{self.quantidade}x {self.produto.nome} (Pedido {self.pedido.id})"
+
+# Create your models here.

@@ -7,7 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('usuario.urls')),  # Aqui incluímos a app usuario
     path('produtos/', include('produto.urls')), 
-    path('pedidos/', include('gestaopedidos.urls')),
+    path('pedidos/', include('pedido.urls')),
     
 ]
 
