@@ -16,7 +16,7 @@ Histórico de Pedidos
         <ul>
             {% for pedido in pedidos %}
                 <li>
-                    <strong>Pedido</strong> - Data: {{ pedido.data_pedido }} - Total: R$ {{ pedido.total|floatformat:2 }}
+                    <strong>Pedido #{{ pedido.id }}</strong> - Data: {{ pedido.data_pedido }} - <strong>Total: R$ {{ pedido.valor_total|floatformat:2 }}</strong>
                     <ul>
                         {% for item in pedido.itens.all %}
                             <li>
