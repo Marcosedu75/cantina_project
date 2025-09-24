@@ -72,7 +72,7 @@ def deletar_pedido(request, pedido_id):
     #aluno
 
 
-@login_required(login_url='login_usuario')
+@login_required(login_url='login')
 def criar_pedidos(request):
     """
     Exibe o cardápio para o usuário fazer um novo pedido (GET)
@@ -128,7 +128,7 @@ def criar_pedidos(request):
     context = {'cardapio': produtos}  # Passa os produtos para o contexto
     return render(request, 'criar_pedidos.html', context)
 
-@login_required(login_url='login_usuario')
+@login_required(login_url='login')
 def historico_pedidos(request):
     # Busca os pedidos do usuário logado, do mais recente para o mais antigo
     pedidos_do_usuario = Pedido.objects.filter(usuario=request.user).order_by('-data_pedido')
