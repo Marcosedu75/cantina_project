@@ -16,12 +16,8 @@ urlpatterns = [
     path('usuario/', usuario, name='usuario'),
     path('deletarconta/', deletar_conta, name='deletar_conta'),
     path('poslogin/', login_redirect_view, name='login_redirect'),
-    path('painel-cantineiro/', dashboard_cantineiro, name='dashboard_cantineiro'),
     path('painel/', painel_usuario, name='painel_usuario'),
+    path('painel-cantineiro/', dashboard_cantineiro, name='dashboard_cantineiro'),
 
 
 ]
-
-
-
-
