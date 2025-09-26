@@ -9,7 +9,7 @@
 {% endif %}
 
 <p>Usuário: {{ usuario.user.username }}</p>
-<p>Nome completo: {{ usuario.full_name }}</p>
+<p>Nome completo: {{ usuario.user.get_full_name }}</p>
 <p>Data de cadastro: {{ usuario.date_joined|date:"d/m/Y" }}</p>
 <p>Status: {% if usuario.is_active %}Ativo{% else %}Inativo{% endif %}</p>
 
