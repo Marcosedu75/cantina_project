@@ -89,22 +89,7 @@ def logout_view(request):
 
 
 
-@login_required
-def gerenciar_pedidos_view(request):
-    # lógica para mostrar pedidos
-    return render(request, 'gerenciar_pedidos.html')
 
-@login_required
-def produtos(request):
-    return render(request, 'produtos.html')
-
-@login_required
-def fazer_pedido(request):
-    return render(request, 'fazer_pedidos')
-
-@login_required
-def listar(request):
-    return redirect('listar_produtos') 
 
 @login_required
 def usuario(request):
