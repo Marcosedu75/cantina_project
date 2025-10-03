@@ -20,15 +20,18 @@
 </form>
 
 {% if request.user.usuario.role == 'cantineiro' %}
-  <form action="{% url 'dashboard_cantineiro' %}" method="get" style="display: inline;">
+  <form action="{% url 'dashboard_cantineiro' %}" method="post" style="display: inline;">
+    {% csrf_token %}
     <button type="submit">Voltar</button>
   </form>
 {% elif request.user.usuario.role == 'aluno' %}
-  <form action="{% url 'painel_usuario' %}" method="get" style="display: inline;">
+  <form action="{% url 'painel_usuario' %}" method="post" style="display: inline;">
+    {% csrf_token %}}
     <button type="submit">Voltar</button>
   </form>
 {% endif %}
 
-<form action="{% url 'deletar_conta' %}" method="get" style="display: inline;">
+<form action="{% url 'deletar_conta' %}" method="post" style="display: inline;">
+  {% csrf_token %}
   <button type="submit">Deletar Conta</button>
 </form>

@@ -134,3 +134,16 @@ def historico_pedidos(request):
     pedidos_do_usuario = Pedido.objects.filter(usuario=request.user).order_by('-data_pedido')
     context = {'pedidos': pedidos_do_usuario}
     return render(request, 'historico_pedidos.html', context)
+
+@login_required
+def ver_cardapio(request):
+    """
+    Exibe um cardápio visual para o aluno, mostrando apenas produtos com estoque.
+    """
+    query = request.GET.get('q', '')
+    # A view agora está em 'pedido', então precisa importar 'Produto'
+    produtos = Produto.objects.filter(estoque__gt=0)
+    if query:
+        produtos = produtos.filter(nome__icontains=query)
+    
+    return render(request, 'ver_cardapio.html', {'produtos': produtos, 'query': query})

@@ -6,7 +6,7 @@
 </head>
 <body>
     <h2>Entrar</h2>
-
+    
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -26,7 +26,8 @@
 
         <button type="submit">Entrar</button>
     </form>
-    <form action="{% url 'cadastro_view' %}" method="get">
+    <form action="{% url 'cadastro_view' %}" method="post">
+        {% csrf_token %}
         <button type="submit" class="btn btn-primary">Não tenho uma conta</button>
     </form>
 </body>

@@ -1,3 +1,5 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <h2>Produtos Disponíveis</h2>
 
 <form method="get" action="" style="margin-bottom: 15px;">
@@ -11,7 +13,7 @@
       {% if produto.foto %}
         <img src="{{ produto.foto.url }}" alt="Foto de {{ produto.nome }}" width="100" style="margin-right: 15px; vertical-align: middle;">
       {% else %}
-        <img src="https://via.placeholder.com/100" alt="Sem foto" width="100" style="margin-right: 15px; vertical-align: middle;">
+        <span class="material-icons" style="font-size: 60px; color: #ccc; line-height: 75px;">fastfood</span>
       {% endif %}
 
       {{ produto.nome }} - R$ {{ produto.preco }} - Estoque: {{ produto.estoque }}
@@ -40,6 +42,7 @@
         {% url 'painel_usuario' %}
     {% else %}
         {% url 'dashboard_cantineiro' %}
-    {% endif %}" method="get" style="margin-top: 10px;">
+    {% endif %}" method="post" style="margin-top: 10px;">
+    {% csrf_token %}
   <button type="submit" class="btn btn-secondary">Voltar</button>
 </form>

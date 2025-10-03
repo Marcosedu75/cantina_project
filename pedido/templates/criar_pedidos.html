@@ -30,6 +30,7 @@ Fazer Pedido
             <table style="width:100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background-color: #f2f2f2;">
+                        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Foto</th>
                         <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Item</th>
                         <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Descrição</th>
                         <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Preço Unitário</th>
@@ -39,6 +40,13 @@ Fazer Pedido
                 <tbody>
                     {% for item in cardapio %}
                         <tr>
+                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                                {% if item.foto %}
+                                    <img src="{{ item.foto.url }}" alt="Foto de {{ item.nome }}" width="75">
+                                {% else %}
+                                    <span class="material-icons" style="font-size: 60px; color: #000000; line-height: 75px;">fastfood</span>
+                                {% endif %}
+                            </td>
                             <td style="padding: 8px; border: 1px solid #ddd;">{{ item.nome }}</td>
                             <td style="padding: 8px; border: 1px solid #ddd;">{{ item.descricao }}</td>
                             <td style="padding: 8px; border: 1px solid #ddd;">R$ {{ item.preco|floatformat:2 }}</td>
