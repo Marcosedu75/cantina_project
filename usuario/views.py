@@ -92,7 +92,7 @@ def logout_view(request):
 
 
 @login_required
-def usuario(request):
+def perfil(request):
     usuario, created = Usuario.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
@@ -102,6 +102,18 @@ def usuario(request):
             return redirect('usuario')
     else:
         form = UsuarioForm(instance=usuario)
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        usuario_data = {
+            'foto': usuario.foto.url if usuario.foto else None,
+            'username': usuario.user.username,
+            'email': usuario.user.email,   
+            'nomecompleto: ': usuario.user.get_full_name(),
+            'situação': 'Ativo' if usuario.user.is_active else 'Inativo',
+            'data_cadastro': usuario.user.date_joined
+            
+        }
+        return JsonResponse({'success': True, 'usuario': usuario_data})
 
     return render(request, 'perfil.html', {'form': form, 'usuario': usuario})
 
