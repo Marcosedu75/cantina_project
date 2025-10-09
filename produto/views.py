@@ -5,6 +5,9 @@ from usuario.models import Usuario
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from urllib.parse import urlencode
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+
 
 def criar_produto(request):
     if request.method == 'POST':
@@ -53,11 +56,25 @@ def listar_produtos(request):
 
     if usuario.role == 'cantineiro':
         produtos = Produto.objects.all()
+
+
     else:
         produtos = Produto.objects.filter(estoque__gt=0)
 
     if query:
         produtos = produtos.filter(nome__icontains=query)
+
+    # Se a requisição for AJAX, retorna os dados em formato JSON
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Converte o queryset de produtos para uma lista de dicionários
+        produtos_data = list(produtos.values('id', 'nome', 'preco', 'estoque', 'foto', 'categoria__nome'))
+        # Adiciona a URL da foto completa
+        for produto in produtos_data:
+            if produto['foto']:
+                produto['foto_url'] = request.build_absolute_uri(f'/media/{produto["foto"]}')
+            else:
+                produto['foto_url'] = None
+        return JsonResponse({'produtos': produtos_data})
 
     return render(request, 'produtos.html', {'produtos': produtos, 'perfil': usuario, 'query': query})
     

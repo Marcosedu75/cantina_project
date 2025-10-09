@@ -99,7 +99,7 @@ def perfil(request):
         form = UsuarioForm(request.POST, request.FILES, instance=usuario)
         if form.is_valid():
             form.save()
-            return redirect('usuario')
+            return redirect('perfil')
     else:
         form = UsuarioForm(instance=usuario)
 
