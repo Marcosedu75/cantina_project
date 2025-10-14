@@ -12,6 +12,20 @@ def home_view(request):
     
     return render(request, 'home.html')
 
+# --- Funções de Teste para Decorators ---
+
+def is_cantineiro(user):
+    """Verifica se o usuário é autenticado e tem a role 'cantineiro'."""
+    if not user.is_authenticated:
+        return False
+    return hasattr(user, 'usuario') and user.usuario.role == 'cantineiro'
+
+def is_aluno(user):
+    """Verifica se o usuário é autenticado e tem a role 'aluno'."""
+    if not user.is_authenticated:
+        return False
+    return hasattr(user, 'usuario') and user.usuario.role == 'aluno'
+
 @login_required
 def login_redirect_view(request):
     usuario = Usuario.objects.filter(user=request.user).first()

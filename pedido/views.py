@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Pedido, ItemPedido, Produto
 from usuario.models import Usuario
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
 from .forms import AtualizarStatusForm
+from usuario.views import is_cantineiro, is_aluno
 
 # DUMMY_PEDIDOS = {
 #     'pedido1': {
@@ -18,29 +20,20 @@ from .forms import AtualizarStatusForm
 
 # }
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def listar_pedidos(request):
-    usuario = get_object_or_404(Usuario, user=request.user)
-    if usuario.role != 'cantineiro':
-        return redirect('home')
     pedidos = Pedido.objects.prefetch_related('usuario').order_by('-data_pedido')
     #pedidos = DUMMY_PEDIDOS.values()  # Usar .values() para iterar sobre os valores do dicionário
     return render(request, 'listar.html', {'pedidos': pedidos})
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def detalhe_pedido(request, pedido_id):
-    usuario = get_object_or_404(Usuario, user=request.user)
-    if usuario.role != 'cantineiro':
-        return redirect('home')
     pedido = get_object_or_404(Pedido, id=pedido_id)
     itens = pedido.itens.select_related('produto')
     return render(request, 'detalhe.html', {'pedido': pedido, 'itens': itens})
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def atualizar_status(request, pedido_id):
-    usuario = get_object_or_404(Usuario, user=request.user)
-    if usuario.role != 'cantineiro':
-        return redirect('home')
     pedido = get_object_or_404(Pedido, id=pedido_id)
     if request.method == 'POST':
         form = AtualizarStatusForm(request.POST, instance=pedido)
@@ -51,11 +44,8 @@ def atualizar_status(request, pedido_id):
         form = AtualizarStatusForm(instance=pedido)
     return render(request, 'atualizar_status.html', {'form': form, 'pedido': pedido})
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def deletar_pedido(request, pedido_id):
-    usuario = get_object_or_404(Usuario, user=request.user)
-    if usuario.role != 'cantineiro':
-        return redirect('home')
     pedido = get_object_or_404(Pedido, id=pedido_id)
     if request.method == 'POST':
         # Itera sobre cada item do pedido e chama o método .delete() de cada um.
@@ -72,7 +62,7 @@ def deletar_pedido(request, pedido_id):
     #aluno
 
 
-@login_required(login_url='login')
+@user_passes_test(is_aluno, login_url='login')
 def criar_pedidos(request):
     """
     Exibe o cardápio para o usuário fazer um novo pedido (GET)
@@ -128,14 +118,14 @@ def criar_pedidos(request):
     context = {'cardapio': produtos}  # Passa os produtos para o contexto
     return render(request, 'criar_pedidos.html', context)
 
-@login_required(login_url='login')
+@user_passes_test(is_aluno, login_url='login')
 def historico_pedidos(request):
     # Busca os pedidos do usuário logado, do mais recente para o mais antigo
     pedidos_do_usuario = Pedido.objects.filter(usuario=request.user).order_by('-data_pedido')
     context = {'pedidos': pedidos_do_usuario}
     return render(request, 'historico_pedidos.html', context)
 
-@login_required
+@user_passes_test(is_aluno, login_url='login')
 def ver_cardapio(request):
     """
     Exibe um cardápio visual para o aluno, mostrando apenas produtos com estoque.
@@ -147,3 +137,88 @@ def ver_cardapio(request):
         produtos = produtos.filter(nome__icontains=query)
     
     return render(request, 'ver_cardapio.html', {'produtos': produtos, 'query': query})
+
+# --- FUNCIONALIDADES DO CARRINHO ---
+
+@user_passes_test(is_aluno, login_url='login')
+def adicionar_ao_carrinho(request, produto_id):
+    """ Adiciona um produto ao carrinho na sessão. """
+    produto = get_object_or_404(Produto, id=produto_id)
+    carrinho = request.session.get('carrinho', {})
+    quantidade_str = request.POST.get('quantidade', '1')
+    quantidade = int(quantidade_str) if quantidade_str.isdigit() and int(quantidade_str) > 0 else 1
+
+    id_produto_str = str(produto.id)
+
+    # Verifica o estoque antes de adicionar
+    quantidade_atual_no_carrinho = carrinho.get(id_produto_str, 0)
+    if (quantidade_atual_no_carrinho + quantidade) > produto.estoque:
+        messages.error(request, f"Estoque insuficiente para '{produto.nome}'. Disponível: {produto.estoque}")
+    else:
+        carrinho[id_produto_str] = quantidade_atual_no_carrinho + quantidade
+        request.session['carrinho'] = carrinho
+        messages.success(request, f"{quantidade}x '{produto.nome}' adicionado(s) ao carrinho.")
+
+    return redirect('ver_cardapio')
+
+@user_passes_test(is_aluno, login_url='login')
+def ver_carrinho(request):
+    """ Exibe os itens do carrinho. """
+    carrinho_session = request.session.get('carrinho', {})
+    itens_carrinho = []
+    valor_total = 0
+
+    # Busca os produtos do carrinho no banco de dados de uma só vez
+    produtos_no_carrinho = Produto.objects.filter(id__in=carrinho_session.keys())
+
+    for produto in produtos_no_carrinho:
+        quantidade = carrinho_session[str(produto.id)]
+        subtotal = produto.preco * quantidade
+        itens_carrinho.append({
+            'produto': produto,
+            'quantidade': quantidade,
+            'subtotal': subtotal,
+        })
+        valor_total += subtotal
+
+    return render(request, 'carrinho.html', {'itens_carrinho': itens_carrinho, 'valor_total': valor_total})
+
+@user_passes_test(is_aluno, login_url='login')
+def remover_do_carrinho(request, produto_id):
+    """ Remove um item do carrinho. """
+    carrinho = request.session.get('carrinho', {})
+    id_produto_str = str(produto_id)
+
+    if id_produto_str in carrinho:
+        del carrinho[id_produto_str]
+        request.session['carrinho'] = carrinho
+        messages.success(request, "Item removido do carrinho.")
+
+    return redirect('ver_carrinho')
+
+@user_passes_test(is_aluno, login_url='login')
+def finalizar_pedido_carrinho(request):
+    """ Cria um pedido a partir dos itens do carrinho e limpa o carrinho. """
+    if request.method == 'POST':
+        carrinho = request.session.get('carrinho', {})
+        if not carrinho:
+            messages.error(request, "Seu carrinho está vazio.")
+            return redirect('ver_carrinho')
+
+        # Reutiliza a lógica de criação de pedido, mas com os dados do carrinho
+        produtos_no_carrinho = Produto.objects.filter(id__in=carrinho.keys())
+        valor_total_pedido = sum(p.preco * carrinho[str(p.id)] for p in produtos_no_carrinho)
+
+        novo_pedido = Pedido.objects.create(usuario=request.user, valor_total=valor_total_pedido)
+
+        for produto in produtos_no_carrinho:
+            quantidade = carrinho[str(produto.id)]
+            ItemPedido.objects.create(pedido=novo_pedido, produto=produto, quantidade=quantidade, preco_unitario=produto.preco)
+            produto.estoque -= quantidade
+            produto.save()
+
+        del request.session['carrinho']  # Limpa o carrinho
+        messages.success(request, "Pedido finalizado com sucesso!")
+        return redirect('historico_pedidos')
+
+    return redirect('ver_carrinho')

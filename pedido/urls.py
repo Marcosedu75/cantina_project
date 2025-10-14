@@ -9,4 +9,9 @@ urlpatterns = [
     path('novo/', views.criar_pedidos, name='criar_pedidos'),
     path('historico/', views.historico_pedidos, name='historico_pedidos'),
     path('cardapio/', views.ver_cardapio, name='ver_cardapio'),
+    # --- URLs do Carrinho ---
+    path('carrinho/', views.ver_carrinho, name='ver_carrinho'),
+    path('carrinho/adicionar/<int:produto_id>/', views.adicionar_ao_carrinho, name='adicionar_ao_carrinho'),
+    path('carrinho/remover/<int:produto_id>/', views.remover_do_carrinho, name='remover_do_carrinho'),
+    path('carrinho/finalizar/', views.finalizar_pedido_carrinho, name='finalizar_pedido_carrinho'),
 ]

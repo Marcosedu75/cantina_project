@@ -26,7 +26,11 @@
                 </div>
                 <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center">
                     <span class="fw-bold fs-5">R$ {{ produto.preco|floatformat:2 }}</span>
-                    <a href="{% url 'criar_pedidos' %}" class="btn btn-success">Pedir agora</a>
+                    <form action="{% url 'adicionar_ao_carrinho' produto.id %}" method="post" class="d-flex">
+                        {% csrf_token %}
+                        <input type="number" name="quantidade" value="1" min="1" max="{{ produto.estoque }}" class="form-control form-control-sm" style="width: 65px; margin-right: 5px;">
+                        <button type="submit" class="btn btn-success btn-sm">Adicionar</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -42,4 +46,3 @@
     </div>
 </section>
 {% endblock %}
-

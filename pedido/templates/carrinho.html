@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}
+Meu Carrinho
+{% endblock %}
+
+{% block header %}
+<h1>Meu Carrinho de Compras</h1>
+{% endblock %}
+
+{% block main %}
+<section>
+    {% if itens_carrinho %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Item</th>
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Preço Unitário</th>
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Quantidade</th>
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Subtotal</th>
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens_carrinho %}
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ item.produto.nome }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">R$ {{ item.produto.preco|floatformat:2 }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">{{ item.quantidade }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">R$ {{ item.subtotal|floatformat:2 }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                            <a href="{% url 'remover_do_carrinho' item.produto.id %}">Remover</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align: right; font-weight: bold; padding: 8px;">Total:</td>
+                    <td colspan="2" style="font-weight: bold; padding: 8px;">R$ {{ valor_total|floatformat:2 }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <br>
+        <form method="post" action="{% url 'finalizar_pedido_carrinho' %}">
+            {% csrf_token %}
+            <button type="submit">Finalizar Pedido</button>
+        </form>
+    {% else %}
+        <p>Seu carrinho está vazio.</p>
+    {% endif %}
+    <br>
+    <a href="{% url 'ver_cardapio' %}">
+        <button type="button">Continuar Comprando</button>
+    </a>
+</section>
+{% endblock %}
+
+{% block footer %}
+<p>© 2025 Cantina do Aluno</p>
+{% endblock %}
