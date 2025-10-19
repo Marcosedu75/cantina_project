@@ -198,27 +198,47 @@ def remover_do_carrinho(request, produto_id):
 
 @user_passes_test(is_aluno, login_url='login')
 def finalizar_pedido_carrinho(request):
-    """ Cria um pedido a partir dos itens do carrinho e limpa o carrinho. """
-    if request.method == 'POST':
-        carrinho = request.session.get('carrinho', {})
-        if not carrinho:
-            messages.error(request, "Seu carrinho está vazio.")
-            return redirect('ver_carrinho')
+    """
+    Exibe a página de seleção de pagamento com o total do carrinho.
+    """
+    carrinho = request.session.get('carrinho', {})
+    if not carrinho:
+        messages.error(request, "Seu carrinho está vazio.")
+        return redirect('ver_carrinho')
 
-        # Reutiliza a lógica de criação de pedido, mas com os dados do carrinho
-        produtos_no_carrinho = Produto.objects.filter(id__in=carrinho.keys())
-        valor_total_pedido = sum(p.preco * carrinho[str(p.id)] for p in produtos_no_carrinho)
+    # Apenas calcula o total e renderiza a página de seleção de pagamento
+    produtos_no_carrinho = Produto.objects.filter(id__in=carrinho.keys())
+    valor_total_pedido = sum(p.preco * carrinho[str(p.id)] for p in produtos_no_carrinho)
 
-        novo_pedido = Pedido.objects.create(usuario=request.user, valor_total=valor_total_pedido)
+    context = {'valor_total': valor_total_pedido}
+    return render(request, 'selecionar_pagamento.html', context)
 
-        for produto in produtos_no_carrinho:
-            quantidade = carrinho[str(produto.id)]
-            ItemPedido.objects.create(pedido=novo_pedido, produto=produto, quantidade=quantidade, preco_unitario=produto.preco)
-            produto.estoque -= quantidade
-            produto.save()
+@user_passes_test(is_aluno, login_url='login')
+def confirmar_pedido(request):
+    """
+    Processa o POST da página de pagamento, cria o pedido e limpa o carrinho.
+    """
+    if request.method != 'POST':
+        # Se não for POST, redireciona para o carrinho, pois não há o que confirmar.
+        return redirect('ver_carrinho')
 
-        del request.session['carrinho']  # Limpa o carrinho
-        messages.success(request, "Pedido finalizado com sucesso!")
-        return redirect('historico_pedidos')
+    carrinho = request.session.get('carrinho', {})
+    if not carrinho:
+        messages.error(request, "Seu carrinho está vazio.")
+        return redirect('ver_carrinho')
 
-    return redirect('ver_carrinho')
+    produtos_no_carrinho = Produto.objects.filter(id__in=carrinho.keys())
+    valor_total_pedido = sum(p.preco * carrinho[str(p.id)] for p in produtos_no_carrinho)
+    forma_pagamento = request.POST.get('pagamento', 'dinheiro')
+
+    novo_pedido = Pedido.objects.create(usuario=request.user, valor_total=valor_total_pedido, pagamento=forma_pagamento)
+
+    for produto in produtos_no_carrinho:
+        quantidade = carrinho[str(produto.id)]
+        ItemPedido.objects.create(pedido=novo_pedido, produto=produto, quantidade=quantidade, preco_unitario=produto.preco)
+        produto.estoque -= quantidade
+        produto.save()
+
+    del request.session['carrinho']
+    messages.success(request, "Pedido finalizado com sucesso!")
+    return redirect('historico_pedidos')

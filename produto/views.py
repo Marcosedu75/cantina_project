@@ -2,13 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto
 from .forms import ProdutoForm
 from usuario.models import Usuario
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
 from urllib.parse import urlencode
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from usuario.views import is_cantineiro, is_aluno
 
 
+@user_passes_test(is_cantineiro, login_url='login')
 def criar_produto(request):
     if request.method == 'POST':
         # Para upload de arquivos, é crucial passar request.FILES
@@ -23,7 +25,7 @@ def criar_produto(request):
     return render(request, 'form.html', {'form': form, 'titulo': 'Criar Produto'})
 
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def editar_produto(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
 
@@ -79,7 +81,7 @@ def listar_produtos(request):
     return render(request, 'produtos.html', {'produtos': produtos, 'perfil': usuario, 'query': query})
     
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def adicionar_estoque(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
     if usuario.role != 'cantineiro':
@@ -94,7 +96,7 @@ def adicionar_estoque(request, produto_id):
         url += '?' + urlencode({'q': q})
     return redirect(url)
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def remover_estoque(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
     if usuario.role != 'cantineiro':
@@ -110,7 +112,7 @@ def remover_estoque(request, produto_id):
         url += '?' + urlencode({'q': q})
     return redirect(url)
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def deletar_produto(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
     

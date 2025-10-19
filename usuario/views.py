@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import CadastroForm, LoginForm, UsuarioForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from usuario.models import Usuario
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt # REMOVER DA PRODUÇÃO - USAR EM DEBUG APENAS
@@ -32,13 +32,13 @@ def login_redirect_view(request):
 
     if usuario:
         if usuario.role == 'aluno':
-            return redirect('criar_pedidos')  # ou 'home_aluno'
+            return redirect('criar_pedidos')  
         elif usuario.role == 'cantineiro':
             return redirect('listar')
     
     return redirect('home') 
 
-@login_required
+@user_passes_test(is_cantineiro, login_url='login')
 def dashboard_cantineiro(request):
     usuario = Usuario.objects.filter(user=request.user).first()
     if not usuario or usuario.role != 'cantineiro':
@@ -46,7 +46,7 @@ def dashboard_cantineiro(request):
     return render(request, 'dashboard_cantineiro.html', {'usuario': usuario})
 
 #Integração código do Rian
-@login_required(login_url='login')
+@user_passes_test(is_aluno,login_url='login')
 def painel_usuario(request):
     """
     Exibe o painel do usuário. Acessível apenas para usuários logados.
