@@ -13,17 +13,29 @@ Histórico de Pedidos
     <h2>Seu Histórico de Pedidos, {{ user.get_full_name|default:user.username }}</h2>
 
     {% if pedidos %}
-        <ul>
+        <ul class="list-group">
             {% for pedido in pedidos %}
-                <li>
-                    <strong>Pedido #{{ pedido.id }}</strong> - Data: {{ pedido.data_pedido }} - <strong>Total: R$ {{ pedido.valor_total|floatformat:2 }}</strong> (Pagamento: {{ pedido.get_pagamento_display }})
-                    <ul>
+                <li class="list-group-item mb-3">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Pedido #{{ pedido.id }}</h5>
+                        <small>{{ pedido.data_pedido|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1">
+                        <strong>Status:</strong> <span class="badge bg-info text-dark">{{ pedido.get_status_display }}</span> | 
+                        <strong>Total: R$ {{ pedido.valor_total|floatformat:2 }}</strong> | 
+                        <strong>Pagamento:</strong> {{ pedido.get_pagamento_display }}
+                    </p>
+                    <ul class="list-unstyled mt-2">
                         {% for item in pedido.itens.all %}
-                            <li>
-                                {{ item.produto.nome }} - Quantidade: {{ item.quantidade }} - Subtotal: R$ {{ item.subtotal|floatformat:2 }}
-                            </li>
+                            <li>- {{ item.quantidade }}x {{ item.produto.nome }}</li>
                         {% endfor %}
                     </ul>
+                    {% if pedido.status == 'aberto' or pedido.status == 'pendente' %}
+                        <form action="{% url 'cancelar_pedido_aluno' pedido.id %}" method="post" class="mt-2" onsubmit="return confirm('Tem certeza que deseja cancelar este pedido?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Cancelar Pedido</button>
+                        </form>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

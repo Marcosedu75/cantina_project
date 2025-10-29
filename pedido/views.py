@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Pedido, ItemPedido, Produto
 from usuario.models import Usuario
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.urls import reverse
 from django.contrib import messages
 from .forms import AtualizarStatusForm
 from usuario.views import is_cantineiro, is_aluno
@@ -62,61 +63,6 @@ def deletar_pedido(request, pedido_id):
     #aluno
 
 
-@user_passes_test(is_aluno, login_url='login')
-def criar_pedidos(request):
-    """
-    Exibe o cardápio para o usuário fazer um novo pedido (GET)
-    e processa o pedido enviado (POST).
-    """
-
-    # Busca produtos com estoque para exibir no cardápio (GET) e processar o pedido (POST)
-    produtos = Produto.objects.filter(estoque__gt=0)
-
-    if request.method == 'POST':
-        itens_selecionados = []
-        valor_total_pedido = 0
-
-        # Etapa 1: Validar o pedido e calcular o total
-        for produto in produtos:
-            quantidade_str = request.POST.get(f'item_{produto.id}')
-            if quantidade_str and int(quantidade_str) > 0:
-                quantidade = int(quantidade_str)
-
-                # Validação de estoque
-                if quantidade > produto.estoque:
-                    # Adiciona uma mensagem de erro e recarrega a página
-                    context = {
-                        'cardapio': produtos,
-                        'erro': f"Estoque insuficiente para '{produto.nome}'. Apenas {produto.estoque} unidades disponíveis."
-                    }
-                    return render(request, 'criar_pedidos.html', context)
-
-                itens_selecionados.append({
-                    'produto': produto,
-                    'quantidade': quantidade,
-                    'preco_unitario': produto.preco
-                })
-                valor_total_pedido += produto.preco * quantidade
-
-        # Etapa 2: Salvar o pedido no banco de dados se houver itens
-        if itens_selecionados:
-            # Cria o pedido principal
-            novo_pedido = Pedido.objects.create(
-                usuario=request.user,
-                valor_total=valor_total_pedido
-            )
-
-            # Cria os itens do pedido e atualiza o estoque
-            for item_data in itens_selecionados:
-                ItemPedido.objects.create(pedido=novo_pedido, **item_data)
-                produto = item_data['produto']
-                produto.estoque -= item_data['quantidade']
-                produto.save()
-
-            return redirect('historico_pedidos') # Redireciona para o histórico
-
-    context = {'cardapio': produtos}  # Passa os produtos para o contexto
-    return render(request, 'criar_pedidos.html', context)
 
 @user_passes_test(is_aluno, login_url='login')
 def historico_pedidos(request):
@@ -132,11 +78,27 @@ def ver_cardapio(request):
     """
     query = request.GET.get('q', '')
     # A view agora está em 'pedido', então precisa importar 'Produto'
-    produtos = Produto.objects.filter(estoque__gt=0)
+    produtos_qs = Produto.objects.filter(estoque__gt=0)
     if query:
-        produtos = produtos.filter(nome__icontains=query)
+        produtos_qs = produtos_qs.filter(nome__icontains=query)
     
-    return render(request, 'ver_cardapio.html', {'produtos': produtos, 'query': query})
+    # Calcula o valor total do carrinho atual
+    carrinho_session = request.session.get('carrinho', {})
+    valor_total_carrinho = 0
+    if carrinho_session:
+        # Busca os produtos do carrinho no banco de dados de uma só vez
+        produtos_no_carrinho = Produto.objects.filter(id__in=carrinho_session.keys())
+        for produto in produtos_no_carrinho:
+            quantidade = carrinho_session.get(str(produto.id), 0)
+            valor_total_carrinho += produto.preco * quantidade
+
+    context = {
+        'produtos': produtos_qs, 
+        'query': query,
+        'valor_total_carrinho': valor_total_carrinho
+    }
+
+    return render(request, 'ver_cardapio.html', context)
 
 # --- FUNCIONALIDADES DO CARRINHO ---
 
@@ -157,7 +119,8 @@ def adicionar_ao_carrinho(request, produto_id):
     else:
         carrinho[id_produto_str] = quantidade_atual_no_carrinho + quantidade
         request.session['carrinho'] = carrinho
-        messages.success(request, f"{quantidade}x '{produto.nome}' adicionado(s) ao carrinho.")
+        link_carrinho = f'<a href="{reverse("ver_carrinho")}" class="alert-link">Ir para o carrinho</a>'
+        messages.success(request, f"'{produto.nome}' adicionado. {link_carrinho}")
 
     return redirect('ver_cardapio')
 
@@ -241,4 +204,30 @@ def confirmar_pedido(request):
 
     del request.session['carrinho']
     messages.success(request, "Pedido finalizado com sucesso!")
+    return redirect('historico_pedidos')
+
+@user_passes_test(is_aluno, login_url='login')
+def cancelar_pedido_aluno(request, pedido_id):
+    """
+    Permite que um aluno cancele seu próprio pedido se o status for
+    'aberto' ou 'pendente'.
+    """
+    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
+
+    if request.method == 'POST':
+        # Verifica se o pedido pode ser cancelado
+        if pedido.status in ['aberto', 'pendente']:
+            pedido_id_msg = pedido.id
+
+            # 1. Devolve os itens ao estoque ANTES de deletar
+            for item in pedido.itens.all():
+                item.produto.estoque += item.quantidade
+                item.produto.save()
+            
+            # 2. Agora deleta o pedido com segurança
+            pedido.delete()
+            messages.success(request, f"Pedido #{pedido_id_msg} foi cancelado e removido com sucesso.")
+        else:
+            messages.error(request, f"Não é possível cancelar o pedido #{pedido.id}, pois ele já está '{pedido.get_status_display()}'.")
+    
     return redirect('historico_pedidos')

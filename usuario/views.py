@@ -32,7 +32,7 @@ def login_redirect_view(request):
 
     if usuario:
         if usuario.role == 'aluno':
-            return redirect('criar_pedidos')  
+            return redirect('ver_cardapio')  
         elif usuario.role == 'cantineiro':
             return redirect('listar')
     

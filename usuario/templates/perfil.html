@@ -26,7 +26,7 @@
   </form>
 {% elif request.user.usuario.role == 'aluno' %}
   <form action="{% url 'painel_usuario' %}" method="post" style="display: inline;">
-    {% csrf_token %}}
+    {% csrf_token %}
     <button type="submit">Voltar</button>
   </form>
 {% endif %}

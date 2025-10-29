@@ -44,5 +44,19 @@
     <div class="mt-4">
         <a href="{% url 'painel_usuario' %}" class="btn btn-secondary">Voltar ao Painel</a>
     </div>
+
+    <!-- Botão Flutuante do Carrinho -->
+    <a href="{% url 'ver_carrinho' %}" class="cart-fab" style="position: fixed; bottom: 20px; right: 20px; z-index: 1030; text-decoration: none;">
+        <div class="btn btn-primary btn-lg rounded-pill d-flex align-items-center shadow-lg" style="padding: 0.75rem 1.5rem;">
+            <span class="material-icons" style="font-size: 1.8rem; vertical-align: middle; margin-right: 8px;">shopping_cart</span>
+            
+            {% if valor_total_carrinho > 0 %}
+                <span class="fw-bold">
+                    R$ {{ valor_total_carrinho|floatformat:2 }}
+                </span>
+            {% endif %}
+        </div>
+    </a>
+
 </section>
 {% endblock %}
