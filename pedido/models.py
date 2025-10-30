@@ -19,7 +19,7 @@ class Pedido(models.Model):
     valor_total = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     pagamento = models.CharField(
         max_length=20,
-        choices=[('dinheiro', 'Dinheiro'), ('cartao', 'Cartão de Crédito/Débito')],
+        choices=[('dinheiro', 'Dinheiro'), ('cartao', 'Cartão de Crédito/Débito'), ('pix', 'PIX')],
         default='dinheiro'
     )
 

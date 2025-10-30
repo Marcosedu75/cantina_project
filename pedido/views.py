@@ -120,7 +120,7 @@ def adicionar_ao_carrinho(request, produto_id):
         carrinho[id_produto_str] = quantidade_atual_no_carrinho + quantidade
         request.session['carrinho'] = carrinho
         link_carrinho = f'<a href="{reverse("ver_carrinho")}" class="alert-link">Ir para o carrinho</a>'
-        messages.success(request, f"'{produto.nome}' adicionado. {link_carrinho}")
+        messages.success(request, f"'{produto.nome}' adicionado. {link_carrinho}", extra_tags='safe')
 
     return redirect('ver_cardapio')
 
@@ -173,7 +173,10 @@ def finalizar_pedido_carrinho(request):
     produtos_no_carrinho = Produto.objects.filter(id__in=carrinho.keys())
     valor_total_pedido = sum(p.preco * carrinho[str(p.id)] for p in produtos_no_carrinho)
 
-    context = {'valor_total': valor_total_pedido}
+    context = {
+        'valor_total': valor_total_pedido,
+        'opcoes_pagamento': Pedido._meta.get_field('pagamento').choices
+    }
     return render(request, 'selecionar_pagamento.html', context)
 
 @user_passes_test(is_aluno, login_url='login')

@@ -21,9 +21,10 @@ Finalizar Pedido
         
         <label for="pagamento"><strong>Escolha a forma de pagamento:</strong></label>
         <br><br>
-        <select name="pagamento" id="pagamento" style="padding: 8px; font-size: 1em;">
-            <option value="dinheiro">Dinheiro</option>
-            <option value="cartao">Cartão de Crédito/Débito</option>
+        <select name="pagamento" id="pagamento" class="form-select" style="padding: 8px; font-size: 1em;">
+            {% for value, display_name in opcoes_pagamento %}
+                <option value="{{ value }}">{{ display_name }}</option>
+            {% endfor %}
         </select>
         <br><br>
         <button type="submit" style="padding: 10px 20px; font-size: 1.1em;">Confirmar Pedido</button>
