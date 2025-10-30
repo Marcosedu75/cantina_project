@@ -21,19 +21,19 @@ from usuario.views import is_cantineiro, is_aluno
 
 # }
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def listar_pedidos(request):
     pedidos = Pedido.objects.prefetch_related('usuario').order_by('-data_pedido')
     #pedidos = DUMMY_PEDIDOS.values()  # Usar .values() para iterar sobre os valores do dicionário
     return render(request, 'listar.html', {'pedidos': pedidos})
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def detalhe_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     itens = pedido.itens.select_related('produto')
     return render(request, 'detalhe.html', {'pedido': pedido, 'itens': itens})
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def atualizar_status(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     if request.method == 'POST':
@@ -45,7 +45,7 @@ def atualizar_status(request, pedido_id):
         form = AtualizarStatusForm(instance=pedido)
     return render(request, 'atualizar_status.html', {'form': form, 'pedido': pedido})
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def deletar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     if request.method == 'POST':
@@ -64,14 +64,14 @@ def deletar_pedido(request, pedido_id):
 
 
 
-@user_passes_test(is_aluno, login_url='login')
+@user_passes_test(is_aluno, login_url='usuario_login')
 def historico_pedidos(request):
     # Busca os pedidos do usuário logado, do mais recente para o mais antigo
     pedidos_do_usuario = Pedido.objects.filter(usuario=request.user).order_by('-data_pedido')
     context = {'pedidos': pedidos_do_usuario}
     return render(request, 'historico_pedidos.html', context)
 
-@user_passes_test(is_aluno, login_url='login')
+@user_passes_test(is_aluno, login_url='usuario_login')
 def ver_cardapio(request):
     """
     Exibe um cardápio visual para o aluno, mostrando apenas produtos com estoque.
@@ -102,7 +102,7 @@ def ver_cardapio(request):
 
 # --- FUNCIONALIDADES DO CARRINHO ---
 
-@user_passes_test(is_aluno, login_url='login')
+@user_passes_test(is_aluno, login_url='usuario_login')
 def adicionar_ao_carrinho(request, produto_id):
     """ Adiciona um produto ao carrinho na sessão. """
     produto = get_object_or_404(Produto, id=produto_id)
@@ -124,7 +124,7 @@ def adicionar_ao_carrinho(request, produto_id):
 
     return redirect('ver_cardapio')
 
-@user_passes_test(is_aluno, login_url='login')
+@user_passes_test(is_aluno, login_url='usuario_login')
 def ver_carrinho(request):
     """ Exibe os itens do carrinho. """
     carrinho_session = request.session.get('carrinho', {})
@@ -146,7 +146,7 @@ def ver_carrinho(request):
 
     return render(request, 'carrinho.html', {'itens_carrinho': itens_carrinho, 'valor_total': valor_total})
 
-@user_passes_test(is_aluno, login_url='login')
+@user_passes_test(is_aluno, login_url='usuario_login')
 def remover_do_carrinho(request, produto_id):
     """ Remove um item do carrinho. """
     carrinho = request.session.get('carrinho', {})
@@ -159,7 +159,7 @@ def remover_do_carrinho(request, produto_id):
 
     return redirect('ver_carrinho')
 
-@user_passes_test(is_aluno, login_url='login')
+@user_passes_test(is_aluno, login_url='usuario_login')
 def finalizar_pedido_carrinho(request):
     """
     Exibe a página de seleção de pagamento com o total do carrinho.
@@ -179,7 +179,7 @@ def finalizar_pedido_carrinho(request):
     }
     return render(request, 'selecionar_pagamento.html', context)
 
-@user_passes_test(is_aluno, login_url='login')
+@user_passes_test(is_aluno, login_url='usuario_login')
 def confirmar_pedido(request):
     """
     Processa o POST da página de pagamento, cria o pedido e limpa o carrinho.
@@ -207,30 +207,4 @@ def confirmar_pedido(request):
 
     del request.session['carrinho']
     messages.success(request, "Pedido finalizado com sucesso!")
-    return redirect('historico_pedidos')
-
-@user_passes_test(is_aluno, login_url='login')
-def cancelar_pedido_aluno(request, pedido_id):
-    """
-    Permite que um aluno cancele seu próprio pedido se o status for
-    'aberto' ou 'pendente'.
-    """
-    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
-
-    if request.method == 'POST':
-        # Verifica se o pedido pode ser cancelado
-        if pedido.status in ['aberto', 'pendente']:
-            pedido_id_msg = pedido.id
-
-            # 1. Devolve os itens ao estoque ANTES de deletar
-            for item in pedido.itens.all():
-                item.produto.estoque += item.quantidade
-                item.produto.save()
-            
-            # 2. Agora deleta o pedido com segurança
-            pedido.delete()
-            messages.success(request, f"Pedido #{pedido_id_msg} foi cancelado e removido com sucesso.")
-        else:
-            messages.error(request, f"Não é possível cancelar o pedido #{pedido.id}, pois ele já está '{pedido.get_status_display()}'.")
-    
     return redirect('historico_pedidos')

@@ -1,0 +1,218 @@
+/* 🌈 Tema Moderno Azul e Ciano */
+
+/* Paleta principal */
+:root {
+    --primary-color: #007BFF;
+    --primary-color-light: #00CFFF;
+    --primary-color-dark: #0056b3;
+
+    --bg-light: #e0f2ff; /* fundo da página */
+    --bg-white: #ffffff;
+    --text-dark: #222;
+    --text-light: #666;
+
+    --danger-color: #ff4d4d;
+    --danger-hover-color: #cc0000;
+}
+
+/* Importa fontes elegantes */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Reset completo de margens e paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo geral */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light); 
+    color: var(--text-dark);
+    line-height: 1.6;
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: column; /* Organiza os itens em coluna (header, main, footer) */
+    min-height: 100vh; /* Garante que o body ocupe no mínimo 100% da altura da tela */
+}
+
+/* Cabeçalho */
+header {
+    background: linear-gradient(135deg, #0056b3, #00cfff);
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Navegação */
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 20px;
+    padding-bottom: 5px; /* Espaço para a borda no hover */
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+}
+
+nav a:hover {
+    opacity: 0.85;
+}
+
+/* Conteúdo principal */
+main {
+    max-width: 960px;
+    margin: 3rem auto;
+    padding: 40px;
+    background-color: var(--bg-white); /* Alterado de gradiente para cor sólida */
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,123,255,0.15);
+    border: 1px solid #d0e7ff;    
+    flex-grow: 1; /* Faz o conteúdo principal crescer e empurrar o rodapé para baixo */
+}
+
+/* Títulos */
+h1, h2, h3 {
+    color: var(--primary-color-dark);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* Parágrafos */
+p {
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+/* Listas */
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.5rem;
+}
+
+li {
+    background: #fff;
+    margin-bottom: 12px;
+    padding: 15px 20px;
+    border-left: 5px solid var(--primary-color);
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+li:hover {
+    transform: translateY(-2px);
+}
+
+/* Formulário */
+form {
+    margin-top: 20px;
+    padding: 30px;
+    background-color: #fdfdff;
+    border-radius: 8px;
+    border: 1px solid #e0e8f0;
+}
+
+form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--primary-color-dark);
+}
+
+form input[type="text"],
+form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d9e6;
+    border-radius: 6px;
+    font-family: inherit;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+    outline: none;
+}
+
+/* Botões */
+.button,
+button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-color-light));
+    color: #fff;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s;
+    text-decoration: none;
+}
+
+.button:hover,
+button[type="submit"]:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Botões de perigo */
+.button-danger {
+    background: linear-gradient(135deg, var(--danger-color), #ff7373);
+}
+
+.button-danger:hover {
+    background: var(--danger-hover-color);
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 4rem;
+    background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color));
+    color: white;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    body {
+        padding: 0 10px; /* Evita que o conteúdo cole nas bordas */
+    }
+
+    main {
+        margin: 1.5rem auto;
+        padding: 20px;
+    }
+
+    nav a {
+        display: block; /* Links um abaixo do outro */
+        margin: 10px 0;
+    }
+
+    .button, button[type="submit"] {
+        width: 100%;
+    }
+}

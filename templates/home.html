@@ -1,12 +1,35 @@
 {% extends 'base.html' %}
 
-{% block title %}Cantina Escolar{% endblock %}
+{% block body_class %}
+    home-page-body
+{% endblock %}
 
-{% block main %}
-  <p>Faça login para acessar seu painel personalizado.</p>
-  <p>Bem vindo a cantina online, aqui você pode realizar pedidos, acompanhar os status do seu pedido, e além do mais, não enfrentar filas</p>
+{% block title %}
+    Projeto Cantina
+{% endblock %}
 
-  <a href="{% url 'login' %}">Faça seu pedido já!</a>
-    
-  
+{% block header %}
+    <h1 class="home-title">Projeto Cantina</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="descrition-home">
+        <h1>Bem-vindo ao nosso sistema de gerenciamento de pedidos!</h1> <!-- colocar nome do usuario -->
+        <h2>Aqui você pode:</h2>
+        <ul>
+            <li><strong>Ver o cardápio</strong> completo com todos os lanches disponíveis.</li>
+            <li><strong>Fazer pedidos</strong> de forma rápida e fácil, direto pelo portal.</li>
+            <li><strong>Acompanhar seus pedidos</strong> e consultar o histórico de pedidos.</li>
+            <li><strong>Editar seu perfil</strong> e manter seus dados sempre atualizados.</li>
+        </ul>
+    </div>
+    <hr>
+    <div class="home-actions">
+        <a href="{% url 'usuario_login' %}" class="btn-animated">Login</a>
+        <a href="{% url 'cadastro_view' %}" class="btn-animated">Cadastrar-se</a>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <h4 class="credited">Projeto Cantina - 2025</h4>
 {% endblock %}

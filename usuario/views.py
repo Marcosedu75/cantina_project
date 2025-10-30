@@ -38,7 +38,7 @@ def login_redirect_view(request):
     
     return redirect('home') 
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def dashboard_cantineiro(request):
     usuario = Usuario.objects.filter(user=request.user).first()
     if not usuario or usuario.role != 'cantineiro':
@@ -46,7 +46,7 @@ def dashboard_cantineiro(request):
     return render(request, 'dashboard_cantineiro.html', {'usuario': usuario})
 
 #Integração código do Rian
-@user_passes_test(is_aluno,login_url='login')
+@user_passes_test(is_aluno,login_url='usuario_login')
 def painel_usuario(request):
     """
     Exibe o painel do usuário. Acessível apenas para usuários logados.
@@ -58,7 +58,7 @@ def cadastro_view(request):
         form = CadastroForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')  # redireciona para login após cadastro
+            return redirect('usuario_login')  # redireciona para login após cadastro
     else:
         form = CadastroForm()
     return render(request, 'cadastro.html', {'form': form})
@@ -68,38 +68,39 @@ def cadastro_view(request):
 @csrf_exempt
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            
-            try:
-                user_obj = Usuario.objects.filter(user__email=email).first()
-                if user_obj:
-                    user = authenticate(request, username=user_obj.user.username, password=password)
-                else:
-                    user = None
-            except Exception:
-                user = None
-
-            if user is not None:
-                login(request, user)
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': True, 'message': 'Login realizado com sucesso!'})
-                return redirect('login_redirect')
+        # form = LoginForm(request.POST)
+        # if form.is_valid():
+        # email = form.cleaned_data['email']
+        # password = form.cleaned_data['password']
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        try:
+            user_obj = Usuario.objects.filter(user__email=email).first()
+            if user_obj:
+                user = authenticate(request, username=user_obj.user.username, password=password)
             else:
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'message': 'Email ou senha inválidos'})
-                form.add_error(None, 'Email ou senha inválidos.')
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+                user = None
+        except Exception:
+            user = None
+
+        if user is not None:
+            login(request, user)
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': True, 'message': 'Login realizado com sucesso!'})
+            return redirect('login_redirect')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'message': 'Email ou senha inválidos'})
+            # form.add_error(None, 'Email ou senha inválidos.')
+        # form = LoginForm()
+    return render(request, 'login.html')
 
 
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('usuario_login')
 
 
 

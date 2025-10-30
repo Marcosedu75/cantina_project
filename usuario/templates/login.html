@@ -1,34 +1,44 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-    <h2>Entrar</h2>
-    
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+{% extends 'base.html' %}
 
-        {% if form.errors %}
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ field.label }}: {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+{% block body_class %}
+    login-register-body
+{% endblock %}
 
-        <button type="submit">Entrar</button>
-    </form>
-    <form action="{% url 'cadastro_view' %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary">Não tenho uma conta</button>
-    </form>
-</body>
-</html>
+{% block title %}
+    Login - Projeto Cantina
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="wrapper">
+        <form method="POST" action="{% url 'usuario_login' %}">
+            <h2 class="login-title">Login</h2>
+            <div class="input-box">
+                <span class="icon">
+                    <i class="fa-solid fa-envelope"></i>
+                </span>
+                <input type="text" placeholder="E-mail" name="email" required>
+            </div>
+            <div class="input-box">
+                <span class="icon">
+                    <i class="fa-solid fa-lock"></i>
+                </span>
+                <input type="password" placeholder="Password" name="password" required>
+            </div>
+            <div class="forgot-pass">
+                <a href="#">Esqueci a senha...</a>
+            </div>
+            <button type="submit">Login</button>
+            <div class="register-link">
+                <p>Não tem uma conta? <a href="{% url 'cadastro_view' %}">Cadastre-se!</a></p>
+                <p>Deseja voltar para a Página Inicial? <a href="{% url 'home' %}">Clique Aqui</a></p>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from usuario.views import is_cantineiro, is_aluno
 
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def criar_produto(request):
     if request.method == 'POST':
         # Para upload de arquivos, é crucial passar request.FILES
@@ -25,7 +25,7 @@ def criar_produto(request):
     return render(request, 'form.html', {'form': form, 'titulo': 'Criar Produto'})
 
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def editar_produto(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
 
@@ -81,7 +81,7 @@ def listar_produtos(request):
     return render(request, 'produtos.html', {'produtos': produtos, 'perfil': usuario, 'query': query})
     
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def adicionar_estoque(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
     if usuario.role != 'cantineiro':
@@ -96,7 +96,7 @@ def adicionar_estoque(request, produto_id):
         url += '?' + urlencode({'q': q})
     return redirect(url)
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def remover_estoque(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
     if usuario.role != 'cantineiro':
@@ -112,7 +112,7 @@ def remover_estoque(request, produto_id):
         url += '?' + urlencode({'q': q})
     return redirect(url)
 
-@user_passes_test(is_cantineiro, login_url='login')
+@user_passes_test(is_cantineiro, login_url='usuario_login')
 def deletar_produto(request, produto_id):
     usuario = get_object_or_404(Usuario, user=request.user)
     

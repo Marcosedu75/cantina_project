@@ -1,67 +1,39 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {% block title %}Cantina Escolar{% endblock %}
-    </title>
-    <!-- Adicionando a fonte de ícones do Google -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body>
-
-    <!-- Navbar fixa -->
-    <nav>
-        <div>
-            {% if user.is_authenticated %}
-                {% if user.usuario.role == 'cantineiro' %}
-                    <a href="{% url 'dashboard_cantineiro' %}">🏫 Cantina Escolar</a>
-                {% elif user.usuario.role == 'aluno' %}
-                    <a href="{% url 'painel_usuario' %}">🏫 Cantina Escolar</a>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'home' %}">🏫 Cantina Escolar</a>
-            {% endif %}
-            <ul>
-                {% if user.is_authenticated %}
-                    <li>Olá, {{ user.get_full_name|default:user.username }}</li>
-                    <li><a href="{% url 'perfil' %}">Meu Perfil</a></li>
-                    <li><a href="{% url 'logout' %}">Sair</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">Entrar</a></li>
-                    <li><a href="{% url 'cadastro_view' %}">Registrar</a></li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
-    
-
-    <!-- Header específico da página -->
-    <header>
-        {% block header %}{% endblock %}
-    </header>
-
-    <!-- Mensagens do sistema -->
-    <section>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+        <script src="{% static 'script.js' %}" defer></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    <body class="{% block body_class %}{% endblock %}">
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
+            <div class="messages-bar">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
         {% endif %}
-    </section>
 
-    <!-- Conteúdo principal -->
-    <main>
-        {% block main %}{% endblock %}
-    </main>
+        <header>
+            {% block header %}
+            {% endblock %}
+        </header>
+        
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
 
-    <!-- Rodapé -->
-    <footer>
-        {% block footer %}
-        <p>&copy; 2025 Cantina Escolar - Todos os direitos reservados</p>
-        {% endblock %}
-    </footer>
-
-</body>
+        <footer>
+            {% block footer %}
+            {% endblock %}
+        </footer>
+    </body>
 </html>

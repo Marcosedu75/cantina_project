@@ -31,10 +31,7 @@ Histórico de Pedidos
                         {% endfor %}
                     </ul>
                     {% if pedido.status == 'aberto' or pedido.status == 'pendente' %}
-                        <form action="{% url 'cancelar_pedido_aluno' pedido.id %}" method="post" class="mt-2" onsubmit="return confirm('Tem certeza que deseja cancelar este pedido?');">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Cancelar Pedido</button>
-                        </form>
+                        <!-- Não há ações de edição para o aluno aqui, apenas visualização do status. -->
                     {% endif %}
                 </li>
             {% endfor %}

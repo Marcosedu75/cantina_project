@@ -12,7 +12,7 @@
     {{ form.as_p }}
     <button type="submit">Cadastrar</button>
     </form>
-    <form action="{% url 'login' %}" method="post">
+    <form action="{% url 'usuario_login' %}" method="post">
         {% csrf_token %}
         <button type="submit">Já tenho uma conta</button>
     </form>
