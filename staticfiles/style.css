@@ -1,0 +1,505 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.home-title {
+  color: var(--secondary-color); /* Usando a variável de cor néon */
+  text-align: center; /* Centralizando o título */
+}
+
+.descrition-home {
+  color: var(--secondary-color);
+  text-align: center;
+  align-items: center;
+}
+
+.descrition-home h1 {
+  color: var(--secondary-color);
+  text-align: center;
+  align-items: center;
+  top: -20px;
+}
+
+.descrition-home h2 {
+  color: var(--secondary-color);
+  text-align: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.credited {
+  color: var(--secondary-color);
+}
+
+/* Aplica a borda RGB apenas no body da página home */
+.home-page-body {
+  animation: rgb-screen-border-animation 7s linear infinite;
+}
+
+/* Estilos para os botões da home */
+.home-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Espaço entre os botões */
+  margin-top: 30px; /* Espaço acima dos botões */
+  width: 100%;
+}
+
+/* Estilos para o conteúdo da home */
+.home-content {
+  text-align: center;
+  margin-bottom: 30px; /* Espaço entre o texto e os botões */
+}
+
+.descrition-home-p {
+  color: var(--secondary-color);
+  margin-top: 10px;
+  font-size: 1.1em;
+  text-shadow: var(--text-shadow-neon);
+}
+
+.login-register-body {
+  animation: rgb-screen-border-animation 7s linear infinite;
+  
+}
+
+.title-cadastro {
+  color: var(--secondary-color);
+}
+
+/*botões neon do home*/
+.btn-animated {
+  display: inline-block;
+  width: 150px; /* Largura do botão */
+  height: 45px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: none; /* Remove o sublinhado do link */
+  text-align: center;
+  line-height: 45px; /* Alinha o texto verticalmente */
+  transition: 0.5s;
+  /* Aplica a mesma animação RGB do botão de login */
+  animation: rgb-animation 7s linear infinite;
+}
+
+/* Estilos para o Painel do Usuário */
+.painel-title {
+  color: var(--primary-color); /* Usando a variável de cor néon */
+  text-align: center; /* Centralizando o título */
+}
+
+.painel-container {
+  background: #000; /* Um fundo escuro, mas diferente do body */
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  color: var(--primary-color);
+  width: center;
+  max-width: 380px;
+  /* Animação de borda similar ao wrapper do login */
+  animation: rgb-border-shadow-animation 20s linear infinite;
+}
+
+.painel-container h1 {
+  color: var(--primary-color);
+  text-align: center;
+  align-items: center;
+  top: -20px;
+}
+
+.painel-container p {
+  margin-bottom: 30px;
+  color: var(--primary-color); /* Garante que o parágrafo seja branco */
+  font-size: 1.1em;
+}
+
+
+.painel-buttons a {
+  margin-bottom: 7px; 
+}
+
+.painel-container li {
+  margin-bottom: 15px; /* Espaçamento entre os botões */
+}
+
+
+.painel-page-body {
+  animation: rgb-screen-border-animation 20s linear infinite;
+}
+
+
+
+.painel-credited { /* Corrected selector to target the h4 directly */
+  color: var(--primary-color);
+  margin-top: 10px;
+  text-align: center; /* Correct property for centering text */
+}
+
+:root {
+  --primary-color: #fff;
+  --secondary-color: #000000;
+  --neon-color: #0ef;
+  --text-shadow-neon: 0 0 5px var(--neon-color), 0 0 10px var(--neon-color);
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #00aeff;
+  border: 10px solid var(--neon-color);   /* Define a largura da borda */
+  flex-direction: column; /* Alinha os itens verticalmente */
+}
+
+
+header {
+  position: absolute;
+  top: 20px; /* Distância do topo */
+  left: 30px; /* Distância da direita */
+  z-index: 10; /* Garante que o header fique sobre outros elementos se necessário */
+}
+
+
+.wrapper {
+  position: relative;
+  color: var(--secondary-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  height: 500px;
+  background: var(--primary-color); 
+  border-radius: 10px;
+  transition: 0.5s;
+  /* Animação RGB na borda e sombra */
+  animation: rgb-border-shadow-animation 20s linear infinite;
+}
+
+h2 {
+  font-size: 2em;
+  text-align: center;
+  transition: 0.5s;
+  color: #fff;
+  /* Animação RGB no texto */
+  /*animation: rgb-text-animation 10s linear infinite;*/
+}
+
+.input-box {
+  position: relative;
+  width: 100%; /* Faz o input-box ocupar a mesma largura do botão */
+  margin: 30px 0;
+}
+
+.input-box input {
+  width: 100%;
+  height: 50px;
+  background: transparent;
+  outline: none;
+  border-radius: 5px;
+  font-size: 1em;
+  color: var(--secondary-color);
+  padding: 0 10px 0 35px;
+  transition: 0.5s;
+  /* Animação RGB na borda e sombra do input */
+  animation: rgb-screen-border-animation 7s linear infinite;
+}
+
+.input-box input::placeholder {
+  color: var(--secondary-color);
+}
+
+.input-box .icon {
+  position: absolute;
+  left: 10px;
+  /* Removido: right: 5px; para evitar que o ícone se sobreponha ao input */
+  font-size: 1.2em;
+  line-height: 55px;
+  transition: 0.5s;
+  color: var(--secondary-color);
+}
+
+.forgot-pass {
+  margin: -15px 0 15px;
+}
+
+.forgot-pass a {
+  color: var(--primary-color);
+  font-size: 0.9em;
+  text-decoration: none;
+}
+
+.forgot-pass a:hover {
+  text-decoration: underline;
+}
+
+button {
+  position: relative;
+  width: 100%;
+  height: 45px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: 0.5s;
+  /* Aplica a animação RGB */
+  animation: rgb-animation 7s linear infinite;
+}
+
+/* Removemos a mudança de fundo no hover para não conflitar com a animação,
+   mas podemos, por exemplo, aumentar o brilho ou mudar a cor do texto. */
+.wrapper:hover button {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Definição da animação RGB */
+@keyframes rgb-animation {
+  0% {
+    background-color: var(--neon-color); /* Azul */
+    box-shadow: 0 0 10px var(--neon-color);
+  }
+
+  15% {
+    border-color: #007bff;
+    box-shadow: 0 0 20px #007bff;
+  }
+
+  33% {
+    background-color: #003366; /* Azul Escuro */
+    box-shadow: 0 0 10px #003366;
+  }
+  67% {
+    background-color: #000000; /* Preto */
+    box-shadow: 0 0 10px #003366; /* Sombra azul escura para não sumir no fundo preto */
+  }
+  100% {
+    background-color: #007BFF; /* Azul */
+    box-shadow: 0 0 10px #007BFF;
+  }
+}
+
+/* Animação para texto */
+@keyframes rgb-text-animation {
+  0% {
+    color: #007BFF; /* Azul */
+  }
+  33% {
+    color: #003366; /* Azul Escuro */
+  }
+  67% {
+    color: #FFFFFF; /* Branco para contraste no preto */
+  }
+  100% {
+    color: #007BFF; /* Azul */
+  }
+}
+
+/* Nova animação para texto que corresponde à animação da borda */
+@keyframes rgb-border-text-animation {
+  0% {
+    color: #007BFF; /* Azul */
+  }
+  33% {
+    color: #003366; /* Azul Escuro */
+  }
+  67% {
+    color: #000000; /* Preto */
+  }
+  100% {
+    color: #007BFF; /* Azul */
+  }
+}
+
+
+/* Animação para bordas e sombras */
+@keyframes rgb-border-shadow-animation {
+  0% {
+    border-color: #007BFF; /* Azul */
+    box-shadow: 0 0 20px #007BFF, inset 0 0 10px #007BFF;
+  }
+  33% {
+    border-color: #003366; /* Azul Escuro */
+    box-shadow: 0 0 20px #003366, inset 0 0 10px #003366;
+  }
+  67% {
+    border-color: #003366; /* Azul Escuro */
+    box-shadow: 0 0 20px #003366, inset 0 0 10px #003366;
+  }
+  100% {
+    border-color: #007BFF; /* Azul */
+    box-shadow: 0 0 20px #007BFF, inset 0 0 10px #007BFF;
+  }
+}
+
+/* Animação para bordas e sombras do input */
+@keyframes rgb-input-shadow-animation {
+  0% {
+    border-color: #007BFF; /* Azul */
+    box-shadow: 0 0 10px #007BFF, inset 0 0 5px #007BFF;
+  }
+  33% {
+    border-color: #003366; /* Azul Escuro */
+    box-shadow: 0 0 10px #003366, inset 0 0 5px #003366;
+  }
+  67% {
+    border-color: #003366; /* Azul Escuro */
+    box-shadow: 0 0 10px #003366, inset 0 0 5px #003366;
+  }
+  100% {
+    border-color: #007BFF; /* Azul */
+    box-shadow: 0 0 10px #007BFF, inset 0 0 5px #007BFF;
+  }
+}
+
+/* Animação para a borda da tela (sem sombra interna) */
+@keyframes rgb-screen-border-animation {
+  0% {
+    border-color: var(--neon-color); /* Azul */
+    box-shadow: 0 0 20px var(--neon-color);
+  }
+
+  15% {
+    border-color: #007bff;
+    box-shadow: 0 0 20px #007bff;
+  }
+  
+  33% {
+    border-color: #003366; /* Azul Escuro */
+    box-shadow: 0 0 20px #003366;
+  }
+  67% {
+    border-color: #000000; /* Preto */
+    box-shadow: 0 0 20px #000000; /* Sombra azul escura para não sumir no fundo preto */
+  }
+  100% {
+    border-color: #007BFF; /* Azul */
+    box-shadow: 0 0 20px #007BFF;
+  }
+}
+
+.register-link {
+  font-size: 0.9em;
+  text-align: center;
+  margin: 25px 0;
+}
+
+.register-link p {
+  color: var(--secondary-color);
+}
+
+.register-link p a {
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.5s;
+  /* Animação RGB no link de registro */
+  
+  animation: rgb-border-text-animation 7s linear infinite;
+}
+
+.register-link p a:hover {
+  text-decoration: underline;
+}
+
+.login-title {
+  color: var(--secondary-color);
+}
+
+/* Media query para telas de celular (até 600px de largura) */
+@media (max-width: 600px) {
+  /* Remove a borda animada nos painéis e formulários em telas pequenas */
+  .painel-container, .wrapper {
+    animation: none; /* Remove a animação da borda */
+    border: none; /* Garante que não haja borda */
+    box-shadow: none; /* Garante que não haja sombra */
+  }
+}
+
+/* A animação foi reativada, mas agora com o tema azul */
+.cart-page-body {
+    background-color: var(--neon-color) !important; /* Fundo preto para a animação de borda se destacar */
+    font-family: "Poppins", sans-serif !important;
+    animation: rgb-screen-border-animation 7s linear infinite;
+}
+
+/* Esconde o header padrão na página do carrinho */
+.cart-page-body header {
+    display: none;
+}
+
+.carrinho-container {
+    background-color: var(--primary-color); /* Azul-escuro */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    animation: rgb-screen-border-animation 7s linear infinite;
+}
+
+.carrinho-container h1 {
+    font-family: Arial, sans-serif;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+}
+
+.product-list {
+    background-color: #003366; /* Azul-claro */
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.product-item {
+    background-color: white;
+    color: black;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+}
+
+.product-item .fa-trash {
+    color: #cc0000;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.total-value {
+    text-align: right;
+    color: var(--secondary-color); /* Corrigido para branco para ser visível no painel */
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.carrinho-buttons button {
+    /* background-color: white; */ /* Removido para a animação funcionar */
+    color: var(--primary-color); /* Alterado para branco para melhor contraste */
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin: 3px;
+    font-size: 16px;
+    animation: rgb-animation 7s linear infinite; /* Animação de fundo RGB */
+    align-items: center;
+}

@@ -6,7 +6,7 @@ from usuario.models import Usuario
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt # REMOVER DA PRODUÇÃO - USAR EM DEBUG APENAS
 from django.contrib.auth.models import User
-
+from django.contrib import messages
 
 def home_view(request):
     
@@ -55,13 +55,28 @@ def painel_usuario(request):
 
 def cadastro_view(request):
     if request.method == 'POST':
-        form = CadastroForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('usuario_login')  # redireciona para login após cadastro
-    else:
-        form = CadastroForm()
-    return render(request, 'cadastro.html', {'form': form})
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Verifica se o usuário já existe
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Esse nome de usuário já está em uso.')
+            return redirect('cadastro_view')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Esse e-mail já está cadastrado.')
+            return redirect('cadastro_view')
+
+        # Cria o usuário
+        user = User.objects.create_user(username=username, email=email, password=password)
+        
+        Usuario.objects.create(user=user, role='aluno')
+
+        messages.success(request, 'Cadastro realizado com sucesso! Faça login para continuar.')
+        return redirect('usuario_login')
+
+    return render(request, 'cadastro.html')
 
 
 
