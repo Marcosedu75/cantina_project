@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 def home_view(request):
-    
     return render(request, 'home.html')
 
 # --- Funções de Teste para Decorators ---
@@ -60,12 +59,8 @@ def cadastro_view(request):
         password = request.POST.get('password')
 
         # Verifica se o usuário já existe
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Esse nome de usuário já está em uso.')
-            return redirect('cadastro_view')
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Esse e-mail já está cadastrado.')
+        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
+            messages.error(request, 'Não foi possível realizar o cadastro. Verifique os dados e tente novamente.')
             return redirect('cadastro_view')
 
         # Cria o usuário
@@ -103,20 +98,22 @@ def login_view(request):
             login(request, user)
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'message': 'Login realizado com sucesso!'})
+            messages.success(request, 'Login realizado com sucesso!')
             return redirect('login_redirect')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': False, 'message': 'Email ou senha inválidos'})
             # form.add_error(None, 'Email ou senha inválidos.')
         # form = LoginForm()
-    return render(request, 'login.html')
+            messages.error(request, "Dados inválidos. Realize o login novamente.")
+            return render(request, 'login.html')
 
+    return render(request, 'login.html')    
 
 
 def logout_view(request):
     logout(request)
     return redirect('usuario_login')
-
 
 
 

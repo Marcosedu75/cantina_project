@@ -1,43 +1,33 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block body_class %}
+    painel-page-body
+{% endblock %}
 
 {% block title %}
-Painel do Aluno
+    Painel do Aluno - Projeto Cantina
 {% endblock %}
 
 {% block header %}
-<h1>Cantina do Aluno</h1>
+
 {% endblock %}
 
-{% block main %}
-<section>
-    <h2>Bem-vindo ao seu painel, {{ user.get_full_name|default:user.username }}!</h2>
-    <p>O que você deseja fazer?</p>
-    <ul>
-        <li>
-            <a href="{% url 'ver_cardapio' %}">
-                <button type="button">Ver Cardápio</button>
-            </a>
-        </li>
-    
-        <li>
-            <a href="{% url 'ver_carrinho' %}">
-                <button type="button">Ver Carrinho</button>
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'historico_pedidos' %}">
-                <button type="button">Ver Histórico de Pedidos</button>
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'logout' %}">
-                <button type="button">Sair da Conta</button>
-            </a>
-        </li>
-    </ul>
-</section>
+{% block content %}
+    <div class="painel-container">
+            <h2>Bem-vindo ao seu painel, Usuário!</h2>
+            <p>O que você deseja fazer?</p>
+            <div class="painel-buttons">
+                <a href="{% url 'ver_cardapio' %}" class="btn-animated">Ver Cardápio</a>
+                <a href="{% url 'ver_carrinho' %}" class="btn-animated">Ver Carrinho</a>
+                <a href="{% url 'historico_pedidos' %}" class="btn-animated">Histórico</a>
+                <a href="{% url 'logout' %}" class="btn-animated">Logout</a>
+            </div>
+    </div>
 {% endblock %}
+
+
+
 
 {% block footer %}
-<p>© 2025 Cantina do Aluno</p>
+    <h4 class="painel-credited">Projeto Cantina - 2025</h4>
 {% endblock %}

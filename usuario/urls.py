@@ -2,7 +2,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import cadastro_view, login_view, logout_view, perfil, deletar_conta, login_redirect_view, dashboard_cantineiro, painel_usuario
-from django.contrib.auth.views import LogoutView
 
 
 urlpatterns = [
