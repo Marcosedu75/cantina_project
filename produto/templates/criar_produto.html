@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Novo Produto</title>
+</head>
+<body>
+    <h2>Criar Novo Produto</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <p>
+            <label for="id_nome">Nome:</label>
+            <input type="text" name="nome" required id="id_nome">
+        </p>
+        <p>
+            <label for="id_preco">Preço:</label>
+            <input type="number" name="preco" step="0.01" required id="id_preco">
+        </p>
+        <p>
+            <label for="id_estoque">Estoque:</label>
+            <input type="number" name="estoque" value="0" required id="id_estoque">
+        </p>
+        <p>
+            <label for="id_categoria">Categoria:</label>
+            <input type="text" name="categoria" id="id_categoria" placeholder="Ex: Bebida, Salgado, Doce">
+        </p>
+        <p>
+            <label for="id_foto">Foto:</label>
+            <input type="file" name="foto" accept="image/*" id="id_foto">
+        </p>
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <form action="{% url 'listar_produtos' %}" method="get" style="margin-top: 10px;">
+        <button type="submit">Cancelar / Voltar</button>
+    </form>
+
+</body>
+</html>

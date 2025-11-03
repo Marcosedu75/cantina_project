@@ -2,6 +2,14 @@
 
 <h2>Produtos Disponíveis</h2>
 
+{% if messages %}
+  <div class="messages" style="padding: 10px; margin-bottom: 15px; border-radius: 5px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+      {% for message in messages %}
+          <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+      {% endfor %}
+  </div>
+{% endif %}
+
 <form method="get" action="" style="margin-bottom: 15px;">
     <input type="text" name="q" placeholder="Buscar produto..." value="{{ query }}">
     <button type="submit">Buscar</button>

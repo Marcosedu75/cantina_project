@@ -1,0 +1,63 @@
+      <!DOCTYPE html>
+      <html lang="pt-br">
+      <head>
+          <meta charset="UTF-8">
+          <title>{{ titulo }}</title>
+      </head>
+      <body>
+          <h2>{{ titulo }}</h2>
+
+          {% if messages %}
+            <div class="messages" style="padding: 10px; margin-bottom: 15px; border-radius: 5px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+                {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                {% endfor %}
+            </div>
+          {% endif %}
+      
+          {% if titulo == 'Editar Produto' and produto.foto %}
+            <p>Foto Atual:</p>
+            <img src="{{ produto.foto.url }}" alt="Foto de {{ produto.nome }}" width="150" style="margin-bottom: 15px;">
+          {% endif %}
+
+          <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <p>
+                  <label for="id_nome">Nome:</label>
+                  <input type="text" name="nome" value="{{ produto.nome }}" required id="id_nome">
+              </p>
+              <p>
+                  <label for="id_preco">Preço:</label>
+                  <input type="number" name="preco" value="{{ produto.preco|stringformat:".2f" }}" step="0.01" required id="id_preco">
+              </p>
+              <p>
+                  <label for="id_estoque">Estoque:</label>
+                  <input type="number" name="estoque" value="{{ produto.estoque }}" required id="id_estoque">
+              </p>
+              <p>
+                  <label for="id_categoria">Categoria:</label>
+                  <input type="text" name="categoria" value="{{ produto.categoria.nome|default:'' }}" id="id_categoria" placeholder="Ex: Bebida, Salgado, Doce">
+              </p>
+              <p>
+                  <label for="id_foto">Nova Foto:</label>
+                  <input type="file" name="foto" accept="image/*" id="id_foto">
+              </p>
+              {% if produto.foto %}
+              <p>
+                  <input type="checkbox" name="remover_foto" id="id_remover_foto">
+                  <label for="id_remover_foto">Remover foto atual</label>
+              </p>
+              {% endif %}
+
+              <button type="submit">Salvar</button>
+          </form>
+          <!-- Botão de excluir -->
+        {% if produto and produto.id %}
+          <a href="{% url 'deletar_produto' produto.id %}">Deletar</a>
+        {% endif %}
+      
+          <form action="{% url 'listar_produtos' %}" method="get">
+              <button type="submit">Cancelar / Voltar</button>
+          </form>
+      </body>
+      </html>
