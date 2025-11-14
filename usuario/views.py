@@ -122,13 +122,13 @@ def logout_view(request):
 def perfil(request):
     usuario, created = Usuario.objects.get_or_create(user=request.user)
 
-    if request.method == 'POST':
-        form = UsuarioForm(request.POST, request.FILES, instance=usuario)
-        if form.is_valid():
-            form.save()
-            return redirect('perfil')
-    else:
-        form = UsuarioForm(instance=usuario)
+    if request.method == "POST":
+        # Atualiza a foto do perfil manualmente, sem usar o form
+        if 'foto' in request.FILES:
+            usuario.foto = request.FILES['foto']
+            usuario.save()
+            messages.success(request, "Foto do perfil atualizada com sucesso!")
+        return redirect('perfil')
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         usuario_data = {
@@ -142,7 +142,7 @@ def perfil(request):
         }
         return JsonResponse({'success': True, 'usuario': usuario_data})
 
-    return render(request, 'perfil.html', {'form': form, 'usuario': usuario})
+    return render(request, 'perfil.html', {'usuario': usuario})
 
 @login_required
 def deletar_conta(request):

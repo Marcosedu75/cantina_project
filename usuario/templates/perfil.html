@@ -1,6 +1,15 @@
-{% load static %}
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+{% if messages %}
+  <div>
+    {% for message in messages %}
+      <p class="alert alert-{{ message.tags }}">
+        {{ message|safe }}
+      </p>
+    {% endfor %}
+  </div>
+{% endif %}
 <h2>Meu Perfil</h2>
 {% if usuario.foto %}
   <img src="{{ usuario.foto.url }}" alt="Foto de perfil" width="120" height="120">
@@ -10,17 +19,18 @@
 
 <p>Usuário: {{ usuario.user.username }}</p>
 <p>Nome completo: {{ usuario.user.get_full_name }}</p>
-<p>Data de cadastro: {{ usuario.date_joined|date:"d/m/Y" }}</p>
-<p>Status: {% if usuario.is_active %}Ativo{% else %}Inativo{% endif %}</p>
+<p>Data de cadastro: {{ usuario.user.date_joined|date:"d/m/Y" }}</p>
+<p>Status: {% if usuario.user.is_active %}Ativo{% else %}Inativo{% endif %}</p>
 
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" action="{% url 'perfil' %}">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Salvar</button>
+  <label for="foto">Alterar foto do perfil:</label>
+  <input type="file" name="foto" accept="image/*">
+  <button type="submit">Atualizar Foto</button>
 </form>
 
 {% if request.user.usuario.role == 'cantineiro' %}
-  <form action="{% url 'dashboard_cantineiro' %}" method="post" style="display: inline;">
+  <form action="{% url 'dashboard_cantineiro' %}" method="get" style="display: inline;">
     {% csrf_token %}
     <button type="submit">Voltar</button>
   </form>

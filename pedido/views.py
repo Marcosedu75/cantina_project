@@ -4,7 +4,6 @@ from usuario.models import Usuario
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
 from django.contrib import messages
-from .forms import AtualizarStatusForm
 from usuario.views import is_cantineiro, is_aluno
 
 # DUMMY_PEDIDOS = {
