@@ -1,7 +1,44 @@
-<h2>Atualizar Status do Pedido #{{ pedido.id }}</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Salvar</button>
-</form>
-<a href="{% url 'listar' %}">Voltar</a>
+{% extends "base.html" %}
+
+{% block title %}
+Atualizar Status do Pedido
+{% endblock %}
+
+{% block header %}
+<h1>Atualizar Status do Pedido #{{ pedido.id }}</h1>
+{% endblock %}
+
+{% block content %}
+<section class="carrinho-container" style="max-width: 600px;">
+    <h2 style="color: #000;">Detalhes do Pedido</h2>
+
+    <div style="color: #000; text-align: left; margin-bottom: 1rem;">
+        <p><strong>Cliente:</strong> {{ pedido.usuario.get_full_name|default:pedido.usuario.username }}</p>
+        <p><strong>Data:</strong> {{ pedido.data_pedido|date:"d/m/Y H:i" }}</p>
+        <p><strong>Status Atual:</strong> <span class="badge bg-info text-dark">{{ pedido.get_status_display }}</span></p>
+        <p><strong>Valor Total:</strong> R$ {{ pedido.valor_total|floatformat:2 }}</p>
+    </div>
+
+    <hr>
+
+    <form action="{% url 'atualizar_status' pedido.id %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <p style="color: #000;"></h2>
+            <label for="status" class="form-label"><strong>Novo Status:</strong></label>
+            <select name="status" id="status" class="form-select">
+                {% for value, display_name in status_choices %}
+                    <option value="{{ value }}" {% if value == pedido.status %}selected{% endif %}>
+                        {{ display_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Atualizar Status</button>
+            <a href="{% url 'listar' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

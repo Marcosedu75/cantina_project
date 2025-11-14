@@ -36,15 +36,28 @@ def detalhe_pedido(request, pedido_id):
 @user_passes_test(is_cantineiro, login_url='usuario_login')
 def atualizar_status(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    if request.method == 'POST':
-        form = AtualizarStatusForm(request.POST, instance=pedido)
-        if form.is_valid():
-            form.save()
-            return redirect('listar')
-    else:
-        form = AtualizarStatusForm(instance=pedido)
-    return render(request, 'atualizar_status.html', {'form': form, 'pedido': pedido})
 
+    if request.method == 'POST':
+        # REGRA DE NEGÓCIO: Impede a alteração de pedidos em estado final.
+        if pedido.status in ['entregue', 'cancelado']:
+            messages.error(request, f"O Pedido #{pedido.id} já foi '{pedido.get_status_display()}' e não pode ser alterado.")
+            return redirect('atualizar_status', pedido_id=pedido.id)
+
+        novo_status = request.POST.get('status')
+        
+        # Valida se o status recebido é uma das opções válidas no modelo Pedido
+        opcoes_validas = [choice[0] for choice in Pedido.STATUS_CHOICES]
+        if novo_status in opcoes_validas:
+            pedido.status = novo_status
+            pedido.save()
+            messages.success(request, f"Status do Pedido #{pedido.id} atualizado para '{pedido.get_status_display()}'.")
+            return redirect('atualizar_status', pedido_id=pedido.id)
+        else:
+            messages.error(request, "Status inválido. A atualização falhou.")
+            # Redireciona de volta para a página de detalhes ou lista
+            return redirect('detalhe_pedido', pedido_id=pedido.id)
+
+    return render(request, 'atualizar_status.html', {'pedido': pedido, 'status_choices': Pedido.STATUS_CHOICES})
 @user_passes_test(is_cantineiro, login_url='usuario_login')
 def deletar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
