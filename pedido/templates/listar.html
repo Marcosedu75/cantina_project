@@ -9,10 +9,7 @@
       Pedido #{{ pedido.id }} - {{ pedido.usuario.get_full_name }} - {{ pedido.get_status_display }}
       <a href="{% url 'detalhe_pedido' pedido.id %}">Ver detalhes</a>
       <a href="{% url 'atualizar_status' pedido.id %}">Atualizar status</a>
-      <form action="{% url 'deletar_pedido' pedido.id %}" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?');">
-        {% csrf_token %}
-        <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">Excluir</button>
-      </form>
+    
     </li>
   {% empty %}
     <li>Nenhum pedido recebido ainda.</li>

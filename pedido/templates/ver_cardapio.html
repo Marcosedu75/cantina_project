@@ -1,62 +1,59 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}
+    criar-pedido-body
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block title %}
+    Cardápio
+{% endblock %}
+
+{% block header %}
+    
+{% endblock %}
 
 {% block content %}
-<section>
-    <h1 class="mb-4">Cardápio da Cantina</h1>
+<div class="pedido-container">
+    <header class="pedido-header">
+        <h1 class="pedido-title">Fazer Pedido</h1>
+        <a href="{% url 'ver_carrinho' %}" class="cart-btn" title="Ver carrinho">
+            <i class="fas fa-shopping-cart"></i>
+        </a>
+    </header>
 
-    <form method="get" action="{% url 'ver_cardapio' %}" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="q" class="form-control" placeholder="Buscar no cardápio..." value="{{ query }}">
-            <button type="submit" class="btn btn-primary">Buscar</button>
-        </div>
-    </form>
+    <nav class="category-menu">
+        <button class="category-btn">Salgados</button>
+        <button class="category-btn">Bebidas</button>
+        <button class="category-btn">Doces</button>
+        <a href="{% url 'logout' %}" class="category-btn" title="Ir para o painel">voltar</a>
+    </nav>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for produto in produtos %}
-        <div class="col">
-            <div class="card h-100">
-                {% if produto.foto %}
-                    <img src="{{ produto.foto.url }}" class="card-img-top" alt="{{ produto.nome }}" style="height: 100px; object-fit: cover;">
-                {% else %}
-                <span class="material-icons" style="font-size: 60px; color: #ccc; line-height: 75px;">fastfood</span>
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ produto.nome }}</h5>
-                    <p class="card-text">{{ produto.descricao|truncatewords:15 }}</p>
-                </div>
-                <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center">
-                    <span class="fw-bold fs-5">R$ {{ produto.preco|floatformat:2 }}</span>
-                    <form action="{% url 'adicionar_ao_carrinho' produto.id %}" method="post" class="d-flex">
-                        {% csrf_token %}
-                        <input type="number" name="quantidade" value="1" min="1" max="{{ produto.estoque }}" class="form-control form-control-sm" style="width: 65px; margin-right: 5px;">
-                        <button type="submit" class="btn btn-success btn-sm">Adicionar</button>
-                    </form>
-                </div>
+    <main class="product-grid">
+        {% for produto in cardapio %}
+        <div class="product-card">
+            <div class="product-image">
+                <img class="product-images" src="{% static produto.imagem %}" alt="{{ produto.nome }}">
+            </div>
+            <div class="product-info">
+                <span class="product-name">{{ produto.nome }}</span>
+                <span class="product-price">R$ {{ produto.preco|floatformat:2 }}</span>
+            </div>
+            <div class="product-controls">
+                <button class="control-btn">-</button>
+                <span class="quantity">0</span>
+                <button class="control-btn">+</button>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12">
-            <p class="text-center">Nenhum produto encontrado no cardápio.</p>
-        </div>
         {% endfor %}
-    </div>
+    </main>
 
-    <div class="mt-4">
-        <a href="{% url 'painel_usuario' %}" class="btn btn-secondary">Voltar ao Painel</a>
-    </div>
+    
+{% endblock %}
 
-    <!-- Botão Flutuante do Carrinho -->
-    <a href="{% url 'ver_carrinho' %}" class="cart-fab" style="position: fixed; bottom: 20px; right: 20px; z-index: 1030; text-decoration: none;">
-        <div class="btn btn-primary btn-lg rounded-pill d-flex align-items-center shadow-lg" style="padding: 0.75rem 1.5rem;">
-            <span class="material-icons" style="font-size: 1.8rem; vertical-align: middle; margin-right: 8px;">shopping_cart</span>
-            
-            {% if valor_total_carrinho > 0 %}
-                <span class="fw-bold">
-                    R$ {{ valor_total_carrinho|floatformat:2 }}
-                </span>
-            {% endif %}
-        </div>
-    </a>
-
-</section>
+{% block footer %}
 {% endblock %}

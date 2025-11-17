@@ -8,4 +8,8 @@
     <li>{{ item.quantidade }}x {{ item.produto.nome }} (R$ {{ item.preco_unitario }})</li>
   {% endfor %}
 </ul>
+<form action="{% url 'deletar_pedido' pedido.id %}" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?');">
+  {% csrf_token %}
+  <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">Excluir</button>
+</form>
 <a href="{% url 'listar' %}">Voltar</a>
