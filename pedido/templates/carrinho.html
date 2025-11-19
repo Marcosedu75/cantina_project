@@ -28,7 +28,7 @@ Meu Carrinho
                         <td style="padding: 8px; border: 1px solid #ddd;">{{ item.produto.nome }}</td>
                         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">{{ item.quantidade }}</td>
                         <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">R$ {{ item.subtotal|floatformat:2 }}</td>
-                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;"> 
                             <a href="{% url 'remover_do_carrinho' item.produto.id %}">Remover</a>
                         </td>
                     </tr>

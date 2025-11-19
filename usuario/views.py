@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect
 from .forms import CadastroForm, LoginForm, UsuarioForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from usuario.models import Usuario
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt # REMOVER DA PRODUÇÃO - USAR EM DEBUG APENAS
 from django.contrib.auth.models import User
 from django.contrib import messages
+from usuario.models import Usuario
+from pedido.models import Pedido
 
 def home_view(request):
     return render(request, 'home.html')
@@ -99,6 +100,14 @@ def login_view(request):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'message': 'Login realizado com sucesso!'})
             messages.success(request, 'Login realizado com sucesso!')
+            
+            # --- IMPLEMENTAÇÃO DO TODO ---
+            # Procura por um pedido com status 'aberto' para o usuário logado.
+            # Se não encontrar, cria um novo.
+            pedido, created = Pedido.objects.get_or_create(
+                usuario=request.user,
+                status='aberto'
+            )
             return redirect('login_redirect')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':

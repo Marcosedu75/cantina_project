@@ -34,19 +34,26 @@
     </nav>
 
     <main class="product-grid">
-        {% for produto in cardapio %}
+        {% for item in itens_cardapio %}
         <div class="product-card">
             <div class="product-image">
-                <img class="product-images" src="{% static produto.imagem %}" alt="{{ produto.nome }}">
+                <img class="product-images" src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}">
             </div>
             <div class="product-info">
-                <span class="product-name">{{ produto.nome }}</span>
-                <span class="product-price">R$ {{ produto.preco|floatformat:2 }}</span>
+                <span class="product-name">{{ item.produto.nome }}</span>
+                <span class="product-price">R$ {{ item.produto.preco|floatformat:2 }}</span>
             </div>
             <div class="product-controls">
-                <button class="control-btn">-</button>
-                <span class="quantity">0</span>
-                <button class="control-btn">+</button>
+                
+                <form method="POST" action="{% url 'remover_do_carrinho' item.produto.id %}">
+                    {% csrf_token %}
+                    <button class="control-btn" type="submit">-</button>
+                </form>
+                <span class="quantity">{{ item.quantidade }}</span>
+                <form method="POST" action="{% url 'adicionar_ao_carrinho' item.produto.id %}">
+                    {% csrf_token %}
+                    <button class="control-btn" type="submit">+</button>
+                </form>
             </div>
         </div>
         {% endfor %}

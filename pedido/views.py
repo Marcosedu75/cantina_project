@@ -22,7 +22,8 @@ from usuario.views import is_cantineiro, is_aluno
 
 @user_passes_test(is_cantineiro, login_url='usuario_login')
 def listar_pedidos(request):
-    pedidos = Pedido.objects.prefetch_related('usuario').order_by('-data_pedido')
+    # Exclui os pedidos com status 'aberto', que são os carrinhos dos usuários.
+    pedidos = Pedido.objects.exclude(status='aberto').prefetch_related('usuario').order_by('-data_pedido')
     #pedidos = DUMMY_PEDIDOS.values()  # Usar .values() para iterar sobre os valores do dicionário
     return render(request, 'listar.html', {'pedidos': pedidos})
 
@@ -94,20 +95,25 @@ def ver_cardapio(request):
     if query:
         produtos_qs = produtos_qs.filter(nome__icontains=query)
     
-    # Calcula o valor total do carrinho atual
-    carrinho_session = request.session.get('carrinho', {})
-    valor_total_carrinho = 0
-    if carrinho_session:
-        # Busca os produtos do carrinho no banco de dados de uma só vez
-        produtos_no_carrinho = Produto.objects.filter(id__in=carrinho_session.keys())
-        for produto in produtos_no_carrinho:
-            quantidade = carrinho_session.get(str(produto.id), 0)
-            valor_total_carrinho += produto.preco * quantidade
+    # --- IMPLEMENTAÇÃO DO FIXME ---
+    # Pega o pedido aberto do usuário (que a view de login já garante que exista)
+    pedido_aberto = Pedido.objects.filter(usuario=request.user, status='aberto').first()
+
+    # Monta a lista de itens para o template, combinando produto e quantidade
+    itens_cardapio = []
+    for produto in produtos_qs:
+        quantidade = 0
+        if pedido_aberto:
+            # Busca o item correspondente a este produto dentro do pedido aberto
+            item_no_pedido = ItemPedido.objects.filter(pedido=pedido_aberto, produto=produto).first()
+            if item_no_pedido:
+                quantidade = item_no_pedido.quantidade
+        # Adiciona o produto e sua quantidade (0 se não estiver no pedido) à lista
+        itens_cardapio.append({'produto': produto, 'quantidade': quantidade})
 
     context = {
-        'produtos': produtos_qs, 
+        'itens_cardapio': itens_cardapio, 
         'query': query,
-        'valor_total_carrinho': valor_total_carrinho
     }
 
     return render(request, 'ver_cardapio.html', context)
@@ -116,21 +122,27 @@ def ver_cardapio(request):
 
 @user_passes_test(is_aluno, login_url='usuario_login')
 def adicionar_ao_carrinho(request, produto_id):
-    """ Adiciona um produto ao carrinho na sessão. """
+    """ Adiciona um produto ao pedido aberto (carrinho) no banco de dados. """
     produto = get_object_or_404(Produto, id=produto_id)
-    carrinho = request.session.get('carrinho', {})
-    quantidade_str = request.POST.get('quantidade', '1')
-    quantidade = int(quantidade_str) if quantidade_str.isdigit() and int(quantidade_str) > 0 else 1
+    
+    # --- IMPLEMENTAÇÃO DO FIXME ---
+    # Encontra o pedido aberto do usuário. A view de login já garante que ele exista.
+    pedido_aberto, created = Pedido.objects.get_or_create(usuario=request.user, status='aberto')
 
-    id_produto_str = str(produto.id)
+    # Encontra o item no pedido ou cria um novo se não existir.
+    item_pedido, created = ItemPedido.objects.get_or_create(
+        pedido=pedido_aberto,
+        produto=produto,
+        defaults={'quantidade': 0, 'preco_unitario': produto.preco}
+    )
 
     # Verifica o estoque antes de adicionar
-    quantidade_atual_no_carrinho = carrinho.get(id_produto_str, 0)
-    if (quantidade_atual_no_carrinho + quantidade) > produto.estoque:
+    if (item_pedido.quantidade + 1) > produto.estoque:
         messages.error(request, f"Estoque insuficiente para '{produto.nome}'. Disponível: {produto.estoque}")
     else:
-        carrinho[id_produto_str] = quantidade_atual_no_carrinho + quantidade
-        request.session['carrinho'] = carrinho
+        # Aumenta a quantidade e salva no banco de dados
+        item_pedido.quantidade += 1
+        item_pedido.save()
         link_carrinho = f'<a href="{reverse("ver_carrinho")}" class="alert-link">Ir para o carrinho</a>'
         messages.success(request, f"'{produto.nome}' adicionado. {link_carrinho}", extra_tags='safe')
 
@@ -139,37 +151,44 @@ def adicionar_ao_carrinho(request, produto_id):
 @user_passes_test(is_aluno, login_url='usuario_login')
 def ver_carrinho(request):
     """ Exibe os itens do carrinho. """
-    carrinho_session = request.session.get('carrinho', {})
+    # Busca o pedido aberto (carrinho) do usuário no banco de dados
+    pedido_aberto = Pedido.objects.filter(usuario=request.user, status='aberto').first()
     itens_carrinho = []
     valor_total = 0
 
-    # Busca os produtos do carrinho no banco de dados de uma só vez
-    produtos_no_carrinho = Produto.objects.filter(id__in=carrinho_session.keys())
+    if pedido_aberto:
+        # Se o pedido existir, busca todos os itens dele
+        itens_carrinho = pedido_aberto.itens.select_related('produto').all()
+        # Calcula o valor total do pedido
+        valor_total = sum(item.subtotal() for item in itens_carrinho)
 
-    for produto in produtos_no_carrinho:
-        quantidade = carrinho_session[str(produto.id)]
-        subtotal = produto.preco * quantidade
-        itens_carrinho.append({
-            'produto': produto,
-            'quantidade': quantidade,
-            'subtotal': subtotal,
-        })
-        valor_total += subtotal
+    context = {
+        'itens_carrinho': itens_carrinho, 
+        'valor_total': valor_total
+    }
 
-    return render(request, 'carrinho.html', {'itens_carrinho': itens_carrinho, 'valor_total': valor_total})
+    return render(request, 'carrinho.html', context)
 
 @user_passes_test(is_aluno, login_url='usuario_login')
 def remover_do_carrinho(request, produto_id):
-    """ Remove um item do carrinho. """
-    carrinho = request.session.get('carrinho', {})
-    id_produto_str = str(produto_id)
+    """ Diminui a quantidade de um item no pedido aberto ou o remove. """
+    # --- IMPLEMENTAÇÃO DO FIXME ---
+    pedido_aberto = Pedido.objects.filter(usuario=request.user, status='aberto').first()
+    
+    if pedido_aberto:
+        item_pedido = ItemPedido.objects.filter(pedido=pedido_aberto, produto_id=produto_id).first()
+        if item_pedido:
+            item_pedido.quantidade -= 1
+            if item_pedido.quantidade > 0:
+                item_pedido.save()
+                messages.info(request, f"Quantidade de '{item_pedido.produto.nome}' atualizada.")
+            else:
+                # Se a quantidade for 0, o método delete do item já devolve ao estoque
+                item_pedido.delete()
+                messages.info(request, f"'{item_pedido.produto.nome}' removido do carrinho.")
 
-    if id_produto_str in carrinho:
-        del carrinho[id_produto_str]
-        request.session['carrinho'] = carrinho
-        messages.success(request, "Item removido do carrinho.")
-
-    return redirect('ver_carrinho')
+    # Redireciona para o cardápio para ver a mudança refletida
+    return redirect('ver_cardapio')
 
 @user_passes_test(is_aluno, login_url='usuario_login')
 def finalizar_pedido_carrinho(request):
@@ -200,23 +219,23 @@ def confirmar_pedido(request):
         # Se não for POST, redireciona para o carrinho, pois não há o que confirmar.
         return redirect('ver_carrinho')
 
-    carrinho = request.session.get('carrinho', {})
-    if not carrinho:
+    pedido_aberto = Pedido.objects.filter(usuario=request.user, status='aberto').first()
+    if not pedido_aberto or not pedido_aberto.itens.exists():
         messages.error(request, "Seu carrinho está vazio.")
         return redirect('ver_carrinho')
 
-    produtos_no_carrinho = Produto.objects.filter(id__in=carrinho.keys())
-    valor_total_pedido = sum(p.preco * carrinho[str(p.id)] for p in produtos_no_carrinho)
     forma_pagamento = request.POST.get('pagamento', 'dinheiro')
 
-    novo_pedido = Pedido.objects.create(usuario=request.user, valor_total=valor_total_pedido, pagamento=forma_pagamento)
+    # Atualiza o pedido existente para o status 'pendente' ou 'preparo'
+    # e define a forma de pagamento.
+    pedido_aberto.status = 'pendente' # Ou 'preparo', dependendo da sua lógica inicial
+    pedido_aberto.pagamento = forma_pagamento
+    
+    # O valor_total já foi calculado e salvo em finalizar_pedido_carrinho
+    # ou pode ser recalculado aqui se preferir.
+    # pedido_aberto.valor_total = sum(item.subtotal() for item in pedido_aberto.itens.all())
+    
+    pedido_aberto.save()
 
-    for produto in produtos_no_carrinho:
-        quantidade = carrinho[str(produto.id)]
-        ItemPedido.objects.create(pedido=novo_pedido, produto=produto, quantidade=quantidade, preco_unitario=produto.preco)
-        produto.estoque -= quantidade
-        produto.save()
-
-    del request.session['carrinho']
     messages.success(request, "Pedido finalizado com sucesso!")
     return redirect('historico_pedidos')
