@@ -30,14 +30,18 @@
         <button class="category-btn">Salgados</button>
         <button class="category-btn">Bebidas</button>
         <button class="category-btn">Doces</button>
-        <a href="{% url 'logout' %}" class="category-btn" title="Ir para o painel">voltar</a>
+        <a href="{% url 'painel_usuario' %}" class="category-btn" title="Ir para o painel">voltar</a>
     </nav>
 
     <main class="product-grid">
         {% for item in itens_cardapio %}
         <div class="product-card">
             <div class="product-image">
-                <img class="product-images" src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}">
+                {% if item.produto.foto %}
+                    <img class="product-images" src="{{ item.produto.foto.url }}" alt="{{ item.produto.nome }}">
+                {% else %}
+                    <div class="product-images-placeholder"><span>Sem Imagem</span></div>
+                {% endif %}
             </div>
             <div class="product-info">
                 <span class="product-name">{{ item.produto.nome }}</span>

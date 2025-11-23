@@ -10,40 +10,49 @@
     {% endfor %}
   </div>
 {% endif %}
+
 <h2>Meu Perfil</h2>
+
+<!-- Seção de informações do usuário -->
+<h4>Informações da Conta</h4>
+<p><b>Usuário:</b> {{ usuario.user.username }}</p>
+<p><b>Nome completo:</b> {{ usuario.user.get_full_name|default:"Não informado" }}</p>
+<p><b>Data de cadastro:</b> {{ usuario.user.date_joined|date:"d/m/Y" }}</p>
+<p><b>Status:</b> {% if usuario.user.is_active %}Ativo{% else %}Inativo{% endif %}</p>
+
+<hr>
+
+<!-- Seção para gerenciamento da foto -->
+<h4>Foto de Perfil</h4>
 {% if usuario.foto %}
   <img src="{{ usuario.foto.url }}" alt="Foto de perfil" width="120" height="120">
 {% else %}
-  <span class="material-icons" style="font-size:100px;">person</span>
+  <span class="material-icons" style="font-size: 120px;">person</span>
 {% endif %}
-
-<p>Usuário: {{ usuario.user.username }}</p>
-<p>Nome completo: {{ usuario.user.get_full_name }}</p>
-<p>Data de cadastro: {{ usuario.user.date_joined|date:"d/m/Y" }}</p>
-<p>Status: {% if usuario.user.is_active %}Ativo{% else %}Inativo{% endif %}</p>
 
 <form method="post" enctype="multipart/form-data" action="{% url 'perfil' %}">
-  {% csrf_token %}
-  <label for="foto">Alterar foto do perfil:</label>
-  <input type="file" name="foto" accept="image/*">
-  <button type="submit">Atualizar Foto</button>
+    {% csrf_token %}
+    <p>
+        <label for="foto">Enviar nova foto:</label><br>
+        <input type="file" name="foto" accept="image/*" id="foto">
+    </p>
+    {% if usuario.foto %}
+    <p>
+        <input type="checkbox" name="remover_foto" id="remover_foto">
+        <label for="remover_foto">Remover foto atual</label>
+    </p>
+    {% endif %}
+    <button type="submit">Atualizar Foto</button>
 </form>
 
+<hr>
+
+<!-- Seção de Ações -->
+<h4>Ações</h4>
 {% if request.user.usuario.role == 'cantineiro' %}
-  <form action="{% url 'dashboard_cantineiro' %}" method="get" style="display: inline;">
-    {% csrf_token %}
-    <button type="submit">Voltar</button>
-  </form>
+  <a href="{% url 'dashboard_cantineiro' %}">Voltar ao Painel</a>
 {% elif request.user.usuario.role == 'aluno' %}
-  <form action="{% url 'painel_usuario' %}" method="post" style="display: inline;">
-    {% csrf_token %}
-    <button type="submit">Voltar</button>
-  </form>
+  <a href="{% url 'painel_usuario' %}">Voltar ao Painel</a>
 {% endif %}
-
-<form action="{% url 'deletar_conta' %}" method="post" style="display: inline;">
-  {% csrf_token %}
-  <button type="submit">Deletar Conta</button>
-</form>
-
-
+<br>
+<a href="{% url 'deletar_conta' %}">Deletar Conta</a>

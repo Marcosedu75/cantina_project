@@ -45,6 +45,13 @@ def atualizar_status(request, pedido_id):
 
         novo_status = request.POST.get('status')
         
+        # --- REGRA DE NEGÓCIO: Impede que 'Pendente' volte para 'Aberto' ---
+        if pedido.status == 'pendente' and novo_status == 'aberto':
+            messages.error(request, "Não é possível alterar um pedido 'Pendente' de volta para 'Aberto'.")
+            # Redireciona de volta para a mesma página sem fazer a alteração.
+            return redirect('atualizar_status', pedido_id=pedido.id)
+        # --------------------------------------------------------------------
+
         # Valida se o status recebido é uma das opções válidas no modelo Pedido
         opcoes_validas = [choice[0] for choice in Pedido.STATUS_CHOICES]
         if novo_status in opcoes_validas:
@@ -57,7 +64,16 @@ def atualizar_status(request, pedido_id):
             # Redireciona de volta para a página de detalhes ou lista
             return redirect('detalhe_pedido', pedido_id=pedido.id)
 
-    return render(request, 'atualizar_status.html', {'pedido': pedido, 'status_choices': Pedido.STATUS_CHOICES})
+    # --- LÓGICA PARA FILTRAR AS OPÇÕES DE STATUS ---
+    opcoes_disponiveis = Pedido.STATUS_CHOICES
+
+    # Se o status do pedido já avançou (não é mais 'aberto'),
+    # remove a opção 'aberto' da lista para impedir que ele regrida.
+    if pedido.status != 'aberto':
+        opcoes_disponiveis = [choice for choice in Pedido.STATUS_CHOICES if choice[0] != 'aberto']
+    # ------------------------------------------------
+
+    return render(request, 'atualizar_status.html', {'pedido': pedido, 'status_choices': opcoes_disponiveis})
 @user_passes_test(is_cantineiro, login_url='usuario_login')
 def deletar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
@@ -195,15 +211,16 @@ def finalizar_pedido_carrinho(request):
     """
     Exibe a página de seleção de pagamento com o total do carrinho.
     """
-    carrinho = request.session.get('carrinho', {})
-    if not carrinho:
+    # Busca o pedido aberto (carrinho) do usuário no banco de dados.
+    pedido_aberto = Pedido.objects.filter(usuario=request.user, status='aberto').first()
+
+    # Verifica se o carrinho está vazio (sem pedido aberto ou sem itens).
+    if not pedido_aberto or not pedido_aberto.itens.exists():
         messages.error(request, "Seu carrinho está vazio.")
         return redirect('ver_carrinho')
 
-    # Apenas calcula o total e renderiza a página de seleção de pagamento
-    produtos_no_carrinho = Produto.objects.filter(id__in=carrinho.keys())
-    valor_total_pedido = sum(p.preco * carrinho[str(p.id)] for p in produtos_no_carrinho)
-
+    # Calcula o valor total a partir dos itens no banco de dados.
+    valor_total_pedido = sum(item.subtotal() for item in pedido_aberto.itens.all())
     context = {
         'valor_total': valor_total_pedido,
         'opcoes_pagamento': Pedido._meta.get_field('pagamento').choices
@@ -231,11 +248,16 @@ def confirmar_pedido(request):
     pedido_aberto.status = 'pendente' # Ou 'preparo', dependendo da sua lógica inicial
     pedido_aberto.pagamento = forma_pagamento
     
-    # O valor_total já foi calculado e salvo em finalizar_pedido_carrinho
-    # ou pode ser recalculado aqui se preferir.
-    # pedido_aberto.valor_total = sum(item.subtotal() for item in pedido_aberto.itens.all())
-    
+    # Calcula e atribui o valor total final ao pedido antes de salvar.
+    pedido_aberto.valor_total = sum(item.subtotal() for item in pedido_aberto.itens.all())
     pedido_aberto.save()
 
     messages.success(request, "Pedido finalizado com sucesso!")
     return redirect('historico_pedidos')
+
+@user_passes_test(is_aluno, login_url='usuario_login')
+def pagamento_concluido(request):
+    """
+    Exibe a página de confirmação de pagamento concluído.
+    """
+    return render(request, 'pagamento_concluido.html')

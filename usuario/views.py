@@ -55,18 +55,29 @@ def painel_usuario(request):
 
 def cadastro_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        # Coleta dos dados do formulário manual
+        # O campo 'nome' do HTML será o 'username' no Django
+        username = request.POST.get('username') 
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        # Verifica se o usuário já existe
+        # --- Validações Manuais ---
+        if not all([username, email, password]):
+            messages.error(request, 'Todos os campos são obrigatórios.')
+            return redirect('cadastro_view')
+
         if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
             messages.error(request, 'Não foi possível realizar o cadastro. Verifique os dados e tente novamente.')
             return redirect('cadastro_view')
 
-        # Cria o usuário
+        # --- Criação do Usuário ---
         user = User.objects.create_user(username=username, email=email, password=password)
         
+        # Salva o username também como o primeiro nome para exibição
+        user.first_name = username
+        user.save()
+
+        # Cria o perfil de usuário associado
         Usuario.objects.create(user=user, role='aluno')
 
         messages.success(request, 'Cadastro realizado com sucesso! Faça login para continuar.')
@@ -102,12 +113,13 @@ def login_view(request):
             messages.success(request, 'Login realizado com sucesso!')
             
             # --- IMPLEMENTAÇÃO DO TODO ---
-            # Procura por um pedido com status 'aberto' para o usuário logado.
-            # Se não encontrar, cria um novo.
-            pedido, created = Pedido.objects.get_or_create(
-                usuario=request.user,
-                status='aberto'
-            )
+            # Garante que um pedido com status 'aberto' seja criado/obtido
+            # apenas para usuários com a role de 'aluno'.
+            if hasattr(request.user, 'usuario') and request.user.usuario.role == 'aluno':
+                pedido, created = Pedido.objects.get_or_create(
+                    usuario=request.user,
+                    status='aberto'
+                )
             return redirect('login_redirect')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -132,11 +144,22 @@ def perfil(request):
     usuario, created = Usuario.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
-        # Atualiza a foto do perfil manualmente, sem usar o form
+        # Verifica se a remoção da foto foi solicitada
+        if request.POST.get('remover_foto'):
+            # Deleta o arquivo de imagem do armazenamento
+            usuario.foto.delete(save=False) 
+            # Remove a referência da foto no banco de dados
+            usuario.foto = None 
+            messages.success(request, "Foto do perfil removida com sucesso!")
+
+        # Verifica se uma nova foto foi enviada (pode acontecer na mesma requisição)
         if 'foto' in request.FILES:
             usuario.foto = request.FILES['foto']
-            usuario.save()
             messages.success(request, "Foto do perfil atualizada com sucesso!")
+        
+        # Salva todas as alterações (remoção e/ou upload) de uma vez
+        usuario.save()
+
         return redirect('perfil')
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':

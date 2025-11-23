@@ -462,6 +462,64 @@ button {
     animation: rgb-screen-border-animation 7s linear infinite;
 }
 
+/* --- Estilos da Página de Pagamento --- */
+
+.payment-page-body {
+    background-color: var(--neon-color); /* Define a cor de fundo estática */
+    animation: rgb-screen-border-animation 7s linear infinite; /* Aplica a animação de borda neon */
+}
+
+.payment-container {
+    text-align: center;
+    width: 90%;
+    background: var(--neon-color);
+    max-width: 500px;
+    margin-top: -100px; /* Adicione esta linha para mover o conteúdo para cima */
+}
+
+.payment-title {
+    font-size: 3rem;
+    color: var(--secondary-color); /* Cor do texto do título para preto */
+    margin-bottom: 60px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.options-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Espaçamento entre os botões */
+}
+
+.payment-option {
+    /* Estilos para se assemelhar ao .btn-animated */
+    display: flex;
+    justify-content: space-between; /* Mantém texto e ícone separados */
+    align-items: center;
+    width: 100%; /* Ocupa a largura do wrapper */
+    height: 60px; /* Altura um pouco maior para acomodar o conteúdo */
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0 25px; /* Padding horizontal */
+    text-decoration: none;
+    transition: 0.5s;
+    animation: rgb-animation 7s linear infinite; /* Animação de fundo RGB */
+}
+
+.payment-option span {
+    font-size: 1.2em; /* Tamanho da fonte ajustado */
+    font-weight: 500;
+    color: var(--primary-color); /* Cor do texto branca */
+}
+
+.payment-option i {
+    font-size: 1.5em; /* Tamanho do ícone ajustado */
+    color: var(--primary-color); /* Cor do ícone branca */
+}
+
+
+
 .carrinho-container h1 {
     font-family: Arial, sans-serif;
     font-size: 28px;
@@ -659,4 +717,84 @@ button {
 .quantity {
     font-size: 1.2em;
     font-weight: 600;
+}
+
+/* --- Estilos da Página de Criar Produto --- */
+
+/* Remove a borda e o padding do body APENAS nesta página */
+.criar-produto-body {
+    background-color: var(--neon-color);
+    padding: 0;
+    border: none; 
+    /* Mantém o alinhamento global para centralizar o container */
+    justify-content: flex-start; /* Alinha o container no topo */
+}
+
+/* O container principal da página */
+.criar-produto-container {
+    width: 100%;
+    padding-top: 150px; /* Aumentado para descer o formulário */
+}
+
+.criar-produto-header {
+    background-color: #003366;
+    box-sizing: border-box;
+    /* Mágica acontece aqui: */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0; /* Garante que ocupe 100% da largura */
+    height: 100px; /* Altura fixa para o header */
+    display: flex;
+    align-items: center; /* Centraliza o título verticalmente */
+    justify-content: center; /* Centraliza o conteúdo do header horizontalmente */
+}
+
+.criar-produto-title {
+    color: white;
+    font-size: 2.5em;
+    font-weight: 600;
+    width: 100%;
+    max-width: 640px; /* Alinha com o formulário */
+    padding: 0 20px; /* Espaçamento lateral */
+}
+
+.criar-produto-form {
+    width: 100%;
+    max-width: 640px; /* Largura máxima do formulário */
+    margin: 0 auto; /* Centraliza o formulário na página */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre os campos do formulário */
+    padding: 0 20px; /* Padding para não encostar nas bordas em telas menores */
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #000;
+    flex: 0 0 120px; /* Largura fixa para o label */
+    text-align: left;
+}
+
+.form-group input {
+    flex: 1; /* Faz o input ocupar o espaço restante */
+    padding: 12px;
+    font-size: 1em;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    animation: none; /* Remove animações globais de input */
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
 }

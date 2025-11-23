@@ -16,11 +16,18 @@ def criar_produto(request):
     if request.method == 'POST':
         # Coleta dos dados
         nome = request.POST.get('nome')
-        preco = request.POST.get('preco')
+        preco_str = request.POST.get('preco')
         estoque = request.POST.get('estoque')
         categoria_nome = request.POST.get('categoria', '').strip()
         foto = request.FILES.get('foto')
         
+        # --- LÓGICA DE CONVERSÃO DO PREÇO ---
+        # Substitui a vírgula por ponto, se existir
+        preco = 0
+        if preco_str:
+            preco = preco_str.replace(',', '.')
+        # ------------------------------------
+
         # Verifica se estoque está vazio e define 0
         if estoque is None or estoque == '':
             estoque = 0
@@ -51,7 +58,13 @@ def editar_produto(request, produto_id):
     if request.method == 'POST':
         # Coleta manual dos dados do formulário e atualiza o objeto
         produto.nome = request.POST.get('nome')
-        produto.preco = request.POST.get('preco')
+        
+        # --- LÓGICA DE CONVERSÃO DO PREÇO (EDIÇÃO) ---
+        preco_str = request.POST.get('preco')
+        if preco_str:
+            produto.preco = preco_str.replace(',', '.')
+        # -------------------------------------------
+
         produto.estoque = request.POST.get('estoque')
         categoria_nome = request.POST.get('categoria', '').strip()
         

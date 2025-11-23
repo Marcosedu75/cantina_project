@@ -1,35 +1,52 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}
+   payment-page-body
+{% endblock %}
 
 {% block title %}
-Finalizar Pedido
+    Formas de Pagamento
 {% endblock %}
 
 {% block header %}
-<h1>Finalizar Pedido</h1>
+    
 {% endblock %}
 
 {% block content %}
-<section>
-    <h2>Confirme seu Pedido</h2>
+    
+    <div class="payment-container">
+        <h1 class="payment-title">Formas de Pagamento</h1>
 
-    <p style="font-size: 1.2em; margin-bottom: 20px;">
-        <strong>Valor Total: R$ {{ valor_total|floatformat:2 }}</strong>
-    </p>
+        <div class="options-wrapper">
+            <form action="{% url 'confirmar_pedido' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="pagamento" value="dinheiro">
+                <button type="submit" class="payment-option">
+                    <span>Dinheiro</span>
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </button>
+            </form>
+            <form action="{% url 'confirmar_pedido' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="pagamento" value="cartao">
+                <button type="submit" class="payment-option">
+                    <span>Cartão de crédito</span>
+                    <i class="fa-regular fa-credit-card"></i>
+                </button>
+            </form>
+            <form action="{% url 'confirmar_pedido' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="pagamento" value="pix">
+                <button type="submit" class="payment-option">
+                    <span>Pix</span>
+                    <i class="fa-brands fa-pix"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
 
-    <form action="{% url 'confirmar_pedido' %}" method="post">
-        {% csrf_token %}
-        
-        <label for="pagamento"><strong>Escolha a forma de pagamento:</strong></label>
-        <br><br>
-        <select name="pagamento" id="pagamento" class="form-select" style="padding: 8px; font-size: 1em;">
-            {% for value, display_name in opcoes_pagamento %}
-                <option value="{{ value }}">{{ display_name }}</option>
-            {% endfor %}
-        </select>
-        <br><br>
-        <button type="submit" style="padding: 10px 20px; font-size: 1.1em;">Confirmar Pedido</button>
-    </form>
-    <br>
-    <a href="{% url 'ver_carrinho' %}">Voltar para o carrinho</a>
-</section>
+{% block footer %}
+
 {% endblock %}
