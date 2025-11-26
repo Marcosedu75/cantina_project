@@ -94,7 +94,7 @@ def editar_produto(request, produto_id):
         return redirect('editar_produto', produto_id=produto.id)
 
     # Adicione o produto no contexto para o template
-    return render(request, 'editar_produto.html', {
+    return render(request, 'editar_produto.html', { # Passa o produto para o template
         'titulo': 'Editar Produto',
         'produto': produto
     })

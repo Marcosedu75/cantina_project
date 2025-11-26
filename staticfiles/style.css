@@ -86,8 +86,10 @@
   text-align: center;
   line-height: 45px; /* Alinha o texto verticalmente */
   transition: 0.5s;
-  /* Aplica a mesma animação RGB do botão de login */
-  animation: rgb-animation 7s linear infinite;
+  /* Modificado para usar a animação de borda */
+  background: transparent; /* Fundo transparente */
+  border: 2px solid; /* Borda que será animada */
+  animation: rgb-screen-border-animation 7s linear infinite;
 }
 
 /* Estilos para o Painel do Usuário */
@@ -131,8 +133,17 @@
 
 .painel-buttons a {
   position: relative;
-  width: 100%; /* Faz o input-box ocupar a mesma largura do botão */
+  /* Ajustes para se comportar como .btn-animated */
+  display: block; /* Faz o link ocupar a largura total e permite altura */
+  width: 100%;
+  height: 45px;
+  line-height: 45px; /* Centraliza o texto verticalmente */
+  text-decoration: none;
+  /* Voltando para o estilo de botão RGB preenchido */
+  color: var(--primary-color); /* Texto branco para contrastar com o fundo animado */
+  background: var(--neon-color); /* Cor inicial para a animação */
   margin: 5px 0;
+  animation: rgb-animation 7s linear infinite; /* Usando a animação de fundo */
 }
 
 .painel-container li {
@@ -435,16 +446,76 @@ button {
   }
 }
 
-/* A animação foi reativada, mas agora com o tema azul */
-.cart-page-body {
-    background-color: var(--neon-color) !important; /* Fundo preto para a animação de borda se destacar */
-    font-family: "Poppins", sans-serif !important;
+/* --- Estilos da Página de Status do Pedido --- */
+
+.top-bar {
+    background-color: #003366;
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px; /* Altura fixa */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: none; /* Garante que a animação de botão não seja aplicada */
+}
+
+/* Novo container para o conteúdo da página de status */
+.status-page-content {
+    display: flex;
+    justify-content: flex-start; /* Alinha a lista de pedidos à esquerda */
+    width: 100%;
+    min-height: 100vh; /* Ocupa a altura da tela */
+    padding-top: 100px; /* Espaço para não ficar atrás da top-bar */
+    padding-left: 20px; /* Espaço lateral */
+    box-sizing: border-box;
+}
+
+.status-pedido-body {
+    background-color: var(--neon-color);
     animation: rgb-screen-border-animation 7s linear infinite;
+}
+
+
+.order-list li {
+    color: black;
+    font-size: 1.8em; /* Fonte grande para os itens */
+    margin-bottom: 25px; /* Espaçamento grande entre os itens da lista */
+}
+
+.back-button {
+    position: fixed; /* Posição fixa na tela */
+    bottom: 30px;
+    right: 40px;
+    background-color: white;
+    border: 1px solid black;
+    padding: 12px 24px;
+    color: black;
+    font-size: 1.2em;
+    font-family: 'Times New Roman', Times, serif;
+    animation: none; /* Remove a animação global de botão */
+}
+
+.footer-container {
+    position: absolute;
+    bottom: 30px;
+    right: 40px; /* Posiciona no canto direito */
+    /* Removemos as propriedades de centralização */
 }
 
 /* Esconde o header padrão na página do carrinho */
 .cart-page-body header {
     display: none;
+}
+
+/* A animação foi reativada, mas agora com o tema azul */
+.cart-page-body {
+    background-color: var(--neon-color) !important; /* Fundo preto para a animação de borda se destacar */
+    font-family: "Poppins", sans-serif !important;
+    animation: rgb-screen-border-animation 7s linear infinite;
 }
 
 .carrinho-container {
@@ -582,7 +653,7 @@ button {
 }
 
 /* Estilos para a página de Criar Pedido */
-.criar-pedido-body { /* Aplica a borda RGB apenas no body da página criar_pedido */
+.criar-pedido-body {
     background-color: var(--neon-color); /* Fundo azul-claro */
     /* Removido: border: none; para permitir que a borda do body seja animada */
     animation: rgb-screen-border-animation 7s linear infinite; /* Aplica a animação da borda */
@@ -722,7 +793,7 @@ button {
 /* --- Estilos da Página de Criar Produto --- */
 
 /* Remove a borda e o padding do body APENAS nesta página */
-.criar-produto-body {
+.editar-produto-body {
     background-color: var(--neon-color);
     padding: 0;
     border: none; 
@@ -731,12 +802,12 @@ button {
 }
 
 /* O container principal da página */
-.criar-produto-container {
+.editar-produto-container {
     width: 100%;
     padding-top: 150px; /* Aumentado para descer o formulário */
 }
 
-.criar-produto-header {
+.editar-produto-header {
     background-color: #003366;
     box-sizing: border-box;
     /* Mágica acontece aqui: */
@@ -750,7 +821,7 @@ button {
     justify-content: center; /* Centraliza o conteúdo do header horizontalmente */
 }
 
-.criar-produto-title {
+.editar-produto-title {
     color: white;
     font-size: 2.5em;
     font-weight: 600;
@@ -759,7 +830,7 @@ button {
     padding: 0 20px; /* Espaçamento lateral */
 }
 
-.criar-produto-form {
+.editar-produto-form {
     width: 100%;
     max-width: 640px; /* Largura máxima do formulário */
     margin: 0 auto; /* Centraliza o formulário na página */
@@ -798,3 +869,4 @@ button {
     gap: 15px;
     margin-top: 30px;
 }
+    
