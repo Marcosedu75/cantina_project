@@ -127,7 +127,7 @@ def listar_produtos(request):
                 produto['foto_url'] = None
         return JsonResponse({'produtos': produtos_data})
 
-    return render(request, 'produtos.html', {'produtos': produtos, 'perfil': usuario, 'query': query})
+    return render(request, 'listar_produtos.html', {'produtos': produtos, 'perfil': usuario, 'query': query})
     
 
 @user_passes_test(is_cantineiro, login_url='usuario_login')

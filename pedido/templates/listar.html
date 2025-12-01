@@ -1,24 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<h2>Pedidos Recebidos</h2>
-<ul>
-  {% for pedido in pedidos %}
-    <li>
-      Pedido #{{ pedido.id }} - {{ pedido.usuario.get_full_name }} - {{ pedido.get_status_display }}
-      <a href="{% url 'detalhe_pedido' pedido.id %}">Ver detalhes</a>
-      <a href="{% url 'atualizar_status' pedido.id %}">Atualizar status</a>
+<div class="pedidos-list-container">
+    <h2 class="listar-pedidos-title">Pedidos Recebidos</h2>
     
-    </li>
-  {% empty %}
-    <li>Nenhum pedido recebido ainda.</li>
-  {% endfor %}
-</ul>
+    <ul class="pedidos-list">
+        {% for pedido in pedidos %}
+            <li class="pedido-item">
+                <span class="pedido-info">
+                    Pedido #{{ pedido.id }} - {{ pedido.usuario.get_full_name }} - {{ pedido.get_status_display }}
+                </span>
+                
+                <div class="pedido-actions">
+                    <a href="{% url 'detalhe_pedido' pedido.id %}">Ver detalhes</a>
+                    <a href="{% url 'atualizar_status' pedido.id %}">Atualizar status</a>
+                </div>
+            </li>
+        {% empty %}
+            <li class="pedido-empty">Nenhum pedido recebido ainda.</li>
+        {% endfor %}
+    </ul>
 
-<a href="{% url 'dashboard_cantineiro' %}">
-  <button type="button">Voltar ao Painel</button>
-</a>
-
-
+    <div class="back-to-painel">
+        <a href="{% url 'dashboard_cantineiro' %}">
+            <button type="button">Voltar ao Painel</button>
+        </a>
+    </div>
+</div>
 {% endblock %}
+
+{% block body_class %}listar-pedidos-body{% endblock %}

@@ -1,50 +1,48 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}
-Meu Carrinho
+{% block body_class %}
+    cart-page-body
 {% endblock %}
 
-{% block header %}
-<h1>Meu Carrinho de Compras</h1>
+{% block title %}
+    Carrinho de Compras - Projeto Cantina
 {% endblock %}
 
 {% block content %}
-<section>
-    <h2>Itens no seu carrinho</h2>
-
-    {% if itens_carrinho %}
-        <table style="width:100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background-color: #f2f2f2;">
-                    <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Produto</th>
-                    <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Quantidade</th>
-                    <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Subtotal</th>
-                    <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Ação</th>
-                </tr>
-            </thead>
-            <tbody>
+    <div class="carrinho-container">
+        <h1>Carrinho</h1>
+        {% if itens_carrinho|length > 0 %}
+            <div class="product-list">
                 {% for item in itens_carrinho %}
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd;">{{ item.produto.nome }}</td>
-                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">{{ item.quantidade }}</td>
-                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">R$ {{ item.subtotal|floatformat:2 }}</td>
-                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;"> 
-                            <a href="{% url 'remover_do_carrinho' item.produto.id %}">Remover</a>
-                        </td>
-                    </tr>
+                    <div class="product-item">
+                        <span>{{ item.produto.nome }} ({{ item.quantidade }}x)</span>
+                        <span>R$ {{ item.subtotal|floatformat:2 }}</span>
+                        <a href="{% url 'remover_do_carrinho' item.produto.id %}" title="Remover item">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
                 {% endfor %}
-            </tbody>
-        </table>
-        <p style="text-align: right; font-size: 1.2em; margin-top: 10px;"><strong>Total: R$ {{ valor_total|floatformat:2 }}</strong></p>
+            </div>
+            <div class="total-value">
+                Valor Total: R$ {{ valor_total|floatformat:2 }}
+            </div>
+            <div class="carrinho-buttons">
+                <a href="{% url 'finalizar_pedido_carrinho' %}">
+                    <button>Finalizar pedido</button>
+                </a>
+            </div>
+            <div class="carrinho-buttons">
+                <a href="{% url 'ver_cardapio' %}">
+                    <button>Continuar comprando</button>
+                </a>
+            </div>
+        {% else %}
+            <p class="carrinho-vazio">Seu carrinho está vazio.</p>
+            <a href="{% url 'ver_cardapio' %}" class="btn-voltar">Voltar ao Cardápio</a>
+        {% endif %}
+    </div>
+{% endblock %}
 
-        <div style="text-align: right; margin-top: 20px;">
-            <a href="{% url 'finalizar_pedido_carrinho' %}"><button>Prosseguir para Pagamento</button></a>
-        </div>
-    {% else %}
-        <p>Seu carrinho está vazio.</p>
-    {% endif %}
-
-    <br>
-    <a href="{% url 'ver_cardapio' %}">Continuar comprando</a> | <a href="{% url 'painel_usuario' %}">Voltar ao Painel</a>
-</section>
+{% block footer %}
+    <h4 class="painel-credited">Projeto Cantina - 2025</h4>
 {% endblock %}

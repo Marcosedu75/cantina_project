@@ -1,15 +1,32 @@
-<h2>Detalhes do Pedido #{{ pedido.id }}</h2>
-<p>Usuário: {{ pedido.usuario.get_full_name }}</p>
-<p>Status: {{ pedido.get_status_display }}</p>
-<p>Pagamento: {{ pedido.get_pagamento_display }}</p>
-<p>Valor total: R$ {{ pedido.valor_total }}</p>
-<ul>
-  {% for item in itens %}
-    <li>{{ item.quantidade }}x {{ item.produto.nome }} (R$ {{ item.preco_unitario }})</li>
-  {% endfor %}
-</ul>
-<form action="{% url 'deletar_pedido' pedido.id %}" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?');">
-  {% csrf_token %}
-  <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">Excluir</button>
-</form>
-<a href="{% url 'listar' %}">Voltar</a>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="detalhes-container">
+    <h2>Detalhes do Pedido #{{ pedido.id }}</h2>
+    
+    <p>Usuário: <strong>{{ pedido.usuario.get_full_name }}</strong></p>
+    <p>Status: <strong>{{ pedido.get_status_display }}</strong></p>
+    <p>Pagamento: <strong>{{ pedido.get_pagamento_display }}</strong></p>
+    <p>Valor total: <strong style="color: #003366;">R$ {{ pedido.valor_total }}</strong></p>
+    
+    <ul class="itens-list">
+        {% for item in itens %}
+            <li>
+                <span>{{ item.produto.nome }}</span>
+                <span>{{ item.quantidade }}x (R$ {{ item.preco_unitario }})</span>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <div class="detalhes-actions">
+        <form action="{% url 'deletar_pedido' pedido.id %}" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este pedido?');">
+            {% csrf_token %}
+            <button type="submit">Excluir Pedido</button>
+        </form>
+        
+        <a href="{% url 'listar' %}" class="btn-voltar">Voltar</a>
+    </div>
+</div>
+
+{% endblock %}

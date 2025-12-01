@@ -1,34 +1,30 @@
 {% extends 'base.html' %}
 
-{% block title %}Painel do Cantineiro{% endblock %}
-
-{% block content %}
-<h1>Painel do Cantineiro</h1>
-<p>Bem-vindo, {{ usuario.user.get_full_name|default:usuario.user.username }}!</p>
-
-<section>
-  <ul>
-    <li>
-      <a href="{% url 'listar' %}">
-        <button>📦 Gerenciar Pedidos</button>
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'listar_produtos' %}">
-        <button>🛒 Editar Produtos</button>
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'perfil' %}">
-        <button>👤 Meu Perfil</button>
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'logout' %}">
-        <button>🚪 Sair</button>
-      </a>
-    </li>
-  </ul>
-</section>
+{% block body_class %}
+    painel-page-body
 {% endblock %}
 
+{% block title %}
+    Painel do Cantineiro
+{% endblock %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="painel-container">
+            <h2>Bem-vindo ao seu painel, Cantineiro!</h2>
+            <p>O que você deseja fazer?</p>
+            <div class="painel-buttons">
+                <a href="{% url 'listar' %}" class="btn-animated">Pedidos Recebidos</a>
+                <a href="{% url 'listar_produtos' %}" class="btn-animated">Editar Produtos</a>
+                <a href="{% url 'perfil' %}" class="btn-animated">Meu perfil</a>
+                <a href="{% url 'logout' %}" class="btn-animated">Logout</a>
+            </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <h4 class="painel-credited">Projeto Cantina - 2025</h4>
+{% endblock %}

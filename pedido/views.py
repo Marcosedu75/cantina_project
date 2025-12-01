@@ -78,15 +78,24 @@ def atualizar_status(request, pedido_id):
 def deletar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     if request.method == 'POST':
-        # Itera sobre cada item do pedido e chama o método .delete() de cada um.
-        # Isso garante que a sua lógica customizada em ItemPedido.delete() seja executada.
-        for item in pedido.itens.all():
-            item.delete()
+        # REGRA: Devolve o estoque apenas se o pedido não foi entregue.
+        if pedido.status in ['pendente', 'preparo', 'cancelado']:
+            # Para estes status, o estoque é devolvido.
+            # Itera sobre cada item para acionar a lógica em ItemPedido.delete().
+            for item in pedido.itens.all():
+                item.delete()
+            messages.success(request, f"Pedido #{pedido.id} excluído e o estoque foi devolvido.")
+        
+        elif pedido.status == 'entregue':
+            # Para pedidos entregues, o estoque NÃO é devolvido.
+            # Usamos um bulk delete que não chama o .delete() de cada item.
+            pedido.itens.all().delete()
+            messages.success(request, f"Pedido #{pedido.id} excluído. O estoque não foi alterado pois o pedido já havia sido entregue.")
 
-        # Agora que os itens foram removidos e o estoque devolvido,
-        # podemos deletar o objeto Pedido, que agora está vazio.
+        # Após tratar os itens, deleta o objeto Pedido.
         pedido.delete()
         return redirect('listar')
+        
     return render(request, 'pedido/delete.html', {'pedido': pedido})
 
     #aluno
@@ -159,8 +168,7 @@ def adicionar_ao_carrinho(request, produto_id):
         # Aumenta a quantidade e salva no banco de dados
         item_pedido.quantidade += 1
         item_pedido.save()
-        link_carrinho = f'<a href="{reverse("ver_carrinho")}" class="alert-link">Ir para o carrinho</a>'
-        messages.success(request, f"'{produto.nome}' adicionado. {link_carrinho}", extra_tags='safe')
+        messages.success(request, f"'{produto.nome}' adicionado ao carrinho.")
 
     return redirect('ver_cardapio')
 
@@ -203,7 +211,12 @@ def remover_do_carrinho(request, produto_id):
                 item_pedido.delete()
                 messages.info(request, f"'{item_pedido.produto.nome}' removido do carrinho.")
 
-    # Redireciona para o cardápio para ver a mudança refletida
+    # Verifica de qual página o usuário veio para redirecioná-lo corretamente.
+    referer_url = request.META.get('HTTP_REFERER')
+    # Se a URL de origem contém '/carrinho/', redireciona de volta para o carrinho.
+    if referer_url and reverse('ver_carrinho') in referer_url:
+        return redirect('ver_carrinho')
+    # Caso contrário, o comportamento padrão é redirecionar para o cardápio.
     return redirect('ver_cardapio')
 
 @user_passes_test(is_aluno, login_url='usuario_login')
@@ -241,6 +254,21 @@ def confirmar_pedido(request):
         messages.error(request, "Seu carrinho está vazio.")
         return redirect('ver_carrinho')
 
+    # --- VERIFICAÇÃO DE ESTOQUE ANTES DE PROCESSAR ---
+    # Percorre todos os itens do carrinho para garantir que há estoque para todos.
+    for item in pedido_aberto.itens.all():
+        produto = item.produto
+        if produto.estoque < item.quantidade:
+            messages.error(request, f"Desculpe, o estoque de '{produto.nome}' é insuficiente. Disponível: {produto.estoque}.")
+            return redirect('ver_carrinho') # Redireciona de volta ao carrinho
+
+    # --- LÓGICA PARA DAR BAIXA NO ESTOQUE ---
+    # Se todas as verificações passaram, agora sim damos baixa no estoque.
+    for item in pedido_aberto.itens.all():
+        produto = item.produto
+        produto.estoque -= item.quantidade
+        produto.save()
+
     forma_pagamento = request.POST.get('pagamento', 'dinheiro')
 
     # Atualiza o pedido existente para o status 'pendente' ou 'preparo'
@@ -253,7 +281,10 @@ def confirmar_pedido(request):
     pedido_aberto.save()
 
     messages.success(request, "Pedido finalizado com sucesso!")
-    return redirect('historico_pedidos')
+    ultimo_pedido = Pedido.objects.filter(usuario=request.user).order_by('-data_pedido').first()
+
+    return render(request, 'pagamento_concluido.html', {'pedido': ultimo_pedido})
+    
 
 @user_passes_test(is_aluno, login_url='usuario_login')
 def pagamento_concluido(request):

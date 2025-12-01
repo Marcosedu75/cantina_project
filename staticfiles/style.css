@@ -590,7 +590,6 @@ button {
 }
 
 
-
 .carrinho-container h1 {
     font-family: Arial, sans-serif;
     font-size: 28px;
@@ -918,4 +917,526 @@ button {
     justify-content: center;
     gap: 15px;
     margin-top: 30px;
+}
+
+/* --- Estilos da Página de Listar Pedidos --- */
+
+.listar-pedidos-body {
+    /* Mantém o fundo neon e a animação de borda RGB */
+    background-color: var(--neon-color) !important;
+    animation: rgb-screen-border-animation 7s linear infinite;
+    /* Alinhamento geral: Inicia no topo e centraliza horizontalmente o conteúdo */
+    align-items: center; 
+    padding-top: 50px;
+    width: 100%; /* Garante que o body ocupe a largura total para centralizar o container */
+}
+
+/* Estilo para o título principal da página */
+.listar-pedidos-title {
+    color: var(--secondary-color);
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Container principal da Lista - Foco na Centralização */
+.pedidos-list-container {
+    width: 90%;
+    max-width: 900px; /* Aumentei um pouco a largura máxima */
+    margin: 0 auto; /* Essa linha centraliza o container na página */
+    padding: 30px; /* Mais padding para respirar */
+    background-color: var(--primary-color); /* Fundo branco/claro */
+    border-radius: 10px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4); /* Sombra mais forte */
+}
+
+/* Estilo para a lista não ordenada */
+.pedidos-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Estilo para cada item de pedido (li) */
+.pedido-item {
+    background-color: #f8f8f8; /* Fundo bem levemente cinza */
+    border-radius: 8px;
+    padding: 20px 25px; /* Mais padding interno */
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+    color: var(--secondary-color);
+    border: 1px solid #ddd; /* Borda sutil */
+    border-left: 5px solid #003366; /* Detalhe azul escuro na lateral */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pedido-item:hover {
+    transform: scale(1.01); /* Zoom sutil ao passar o mouse */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-left-color: var(--neon-color); /* Destaca a borda ao passar o mouse */
+}
+
+/* Estilo para o texto principal do pedido */
+.pedido-info {
+    flex-grow: 1;
+    font-weight: 600; /* Texto mais destacado */
+    margin-right: 20px;
+    line-height: 1.4; /* Mais espaço entre linhas se quebrar */
+}
+
+/* Container para os links de ação */
+.pedido-actions {
+    display: flex;
+    gap: 15px; /* Mais espaço entre os botões de ação */
+    flex-shrink: 0; 
+}
+
+/* Estilos para os links (Ver detalhes, Atualizar status) */
+.pedido-item a {
+    display: inline-block;
+    padding: 8px 15px; /* Padding maior para os botões */
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.95em; /* Levemente maior */
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Link Ver Detalhes (Azul Escuro) */
+.pedido-item a:first-of-type {
+    background-color: #003366;
+    color: var(--primary-color);
+}
+.pedido-item a:first-of-type:hover {
+    background-color: var(--neon-color);
+    color: var(--secondary-color);
+}
+
+/* Link Atualizar Status (Azul Neon) */
+.pedido-item a:last-of-type {
+    background-color: var(--neon-color);
+    color: var(--secondary-color);
+}
+.pedido-item a:last-of-type:hover {
+    background-color: #003366;
+    color: var(--primary-color);
+}
+
+/* Estilo para o texto de nenhum pedido */
+.pedido-empty {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+    padding: 30px;
+    font-size: 1.2em;
+}
+
+/* O botão Voltar ao Painel - reutiliza o estilo global de botão animado */
+.back-to-painel {
+    margin-top: 40px; /* Mais espaço acima do botão */
+    text-align: center;
+}
+
+.back-to-painel button {
+    width: 280px; /* Botão ligeiramente maior */
+}
+
+/* Ajuste para mobile */
+@media (max-width: 600px) {
+    .pedidos-list-container {
+        padding: 20px 10px; /* Reduz padding lateral em mobile */
+    }
+    
+    .pedido-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .pedido-info {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+    
+    .pedido-actions {
+        width: 100%;
+        gap: 10px;
+        flex-direction: column;
+    }
+
+    .pedido-item a {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* --- Estilos da Página de Detalhes do Pedido --- */
+
+/* 1. Body com fundo e animação neon */
+.detalhes-pedido-body {
+    width: 100%;
+    min-height: 100vh;
+    /* Alinhamento que permite a centralização interna do container */
+    justify-content: center; 
+    align-items: center; 
+    padding-top: 50px; /* Um pouco de espaço extra do topo se o container for pequeno */
+    background-color: #00aeff !important;
+    animation: rgb-screen-border-animation 7s linear infinite;
+}
+
+/* 2. Container principal (o "cartão" de detalhes) */
+.detalhes-container {
+    width: 90%;
+    max-width: 600px; /* Largura menor para focar nos detalhes */
+    margin: 0 auto; /* Centraliza o container */
+    padding: 35px;
+    background-color: var(--primary-color); /* Fundo branco para contraste */
+    border-radius: 15px; /* Bordas mais suaves */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    color: var(--secondary-color); /* Texto padrão preto */
+}
+
+/* 3. Título Principal */
+.detalhes-container h2 {
+    color: var(--secondary-color); /* Título em cor néon */
+    text-align: center;
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+/* 4. Parágrafos de Informação */
+.detalhes-container p {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ddd; /* Linha divisória suave */
+    padding-bottom: 5px;
+}
+
+/* 5. Lista de Itens do Pedido */
+.itens-list {
+    list-style: none;
+    padding: 10px 0;
+    margin-top: 20px;
+    border-top: 2px solid var(--secondary-color);
+}
+
+.itens-list li {
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 6. Botão Voltar (Reutiliza estilo animado) */
+.detalhes-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detalhes-actions .btn-voltar {
+    /* Reutiliza o estilo base do botão animado */
+    display: inline-block;
+    width: 150px; 
+    height: 45px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 5px;
+    
+    /* Cores e Animação */
+    color: var(--primary-color);
+    background: #003366; 
+    animation: rgb-animation 7s linear infinite;
+}
+
+/* 7. Botão Excluir (Link de texto simples com formatação) */
+.detalhes-actions form button {
+    font-size: 1em;
+    font-weight: 500;
+    color: #cc0000; /* Cor de alerta */
+    transition: color 0.3s ease;
+    width: auto; /* Sobrescreve a largura de 100% do botão global */
+    animation: none; /* Remove a animação global de botão */
+}
+.detalhes-actions form button:hover {
+    color: #ff3333;
+}
+
+/* --- Estilos da Página de Atualizar Status --- */
+
+.status-update-body {
+    /* Configurações de fundo animado */
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center; 
+    align-items: center; 
+    padding-top: 50px; 
+    border: 10px solid var(--primary-color); 
+    background-color: #00aeff !important; 
+    animation: rgb-screen-border-animation 7s linear infinite;
+}
+
+.status-update-container {
+    width: 90%;
+    max-width: 500px; /* Cartão menor, focado */
+    margin: 0 auto;
+    padding: 35px;
+    background-color: var(--primary-color);
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    color: var(--secondary-color); /* Alterado para preto para ser legível em fundo branco */
+    text-align: center;
+    border: 1px solid #ddd; /* Borda sutil para definição */
+}
+
+.status-update-title {
+    color: var(--secondary-color);
+    font-size: 1.8em;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* Informações de contexto (Cliente/Data) */
+.status-context-info {
+    text-align: left;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd; /* Borda mais suave */
+}
+
+.status-context-info p {
+    font-size: 1em;
+    color: #000000;
+    margin: 5px 0;
+}
+
+.status-context-info strong {
+    color: var(--secondary-color);
+}
+
+/* Caixa de Destaque do Status Atual */
+.current-status-box {
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #003366; /* Fundo azul escuro para combinar com o tema */
+    border-radius: 8px;
+    border: 1px solid var(--neon-color); /* Borda neon */
+}
+
+.current-status-box p {
+    font-size: 0.9em;
+    color: #ccc; /* Cinza claro para o texto "Status Atual" */
+    margin-bottom: 5px;
+}
+
+.current-status-display {
+    display: block;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--primary-color); /* Texto do status em branco para contraste */
+}
+
+/* Formulário de Seleção */
+.form-group-status {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-label-status {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--secondary-color); /* Texto do label em preto */
+    font-size: 1.1em;
+}
+
+.form-select-status {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    background-color: #f8f9fa;
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    color: var(--secondary-color);
+    appearance: none; /* Remove estilo nativo do SO */
+    cursor: pointer;
+}
+
+/* Ações (Botões) */
+.form-actions-status {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-submit-status, .btn-cancel-status {
+    flex-grow: 1;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+}
+
+/* Botão Atualizar (Neon Animado) */
+.btn-submit-status {
+    color: var(--primary-color);
+    background: var(--neon-color);
+    animation: rgb-animation 7s linear infinite;
+}
+
+.btn-submit-status:hover {
+    box-shadow: 0 0 15px var(--neon-color);
+}
+
+/* Botão Cancelar (Secundário) */
+.btn-cancel-status {
+    color: var(--primary-color);
+    background: #6c757d; /* Cinza padrão para ações secundárias */
+    width: auto; /* Largura automática baseada no conteúdo */
+    padding: 0 20px; /* Adiciona padding horizontal */
+}
+
+.btn-cancel-status:hover {
+    background: #5a6268;
+}
+
+.listar-produto-body {
+    /* Mantém o fundo neon e a animação de borda RGB */
+    background-color: var(--neon-color) !important;
+    justify-content: flex-start; /* Alinha o conteúdo no topo */
+    animation: rgb-screen-border-animation 7s linear infinite;
+    padding: 0;
+}
+
+.listar-produto-header {
+    background-color: #003366;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.listar-produto-title {
+    color: white;
+    font-size: 2.5em;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Container para o conteúdo principal (tabela e botões) */
+.listar-produto-content {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 130px 20px 40px; /* Padding: topo (para desviar do header), laterais, fundo */
+}
+
+.tabela-produtos-container {
+    overflow-x: auto; /* Adiciona scroll horizontal em telas pequenas */
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semitransparente para a tabela */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tabela-produtos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1em;
+    background-color: transparent; /* Garante que a tabela não tenha cor de fundo própria */
+}
+
+.tabela-produtos th, .tabela-produtos td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+    color: var(--secondary-color);
+}
+
+.tabela-produtos thead th {
+    background-color: transparent;
+    color: var(--secondary-color);
+    font-weight: 700;
+    font-size: 1.1em;
+    border-bottom-width: 2px;
+}
+
+.tabela-produtos tbody tr:hover {
+    background-color: rgba(0, 51, 102, 0.1); /* Destaque azul claro ao passar o mouse */
+}
+
+.acoes {
+    text-align: center;
+    white-space: nowrap; /* Impede que os botões quebrem linha */
+}
+
+.btn-acao {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 0.9em;
+    margin: 0 4px;
+    border: none;
+    cursor: pointer;
+  
+ }
+
+.nenhum-produto {
+  color: var(--secondary-color);
+}
+
+.btn-editar { background-color: #007bff; }
+.btn-excluir { background-color: #dc3545; }
+
+/* Container para os botões inferiores */
+.listar-produto-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+/* Estilo unificado para os botões inferiores */
+.btn-adicionar, .btn-voltar {
+    background-color: #fff;
+    color: #003366;
+    border: 2px solid #003366;
+    border-radius: 10px;
+    padding: 10px 25px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    animation: none;
+}
+
+.btn-adicionar:hover, .btn-voltar:hover {
+    background-color: #003366;
+    color: #fff;
 }

@@ -1,25 +1,53 @@
 {% extends "base.html" %}
-<html lang="pt-br">
-<h2>Produtos Cadastrados</h2>
+{% load static %}
 
-<form method="get" action="">
-    <input type="text" name="q" placeholder="Buscar produto..." value="{{ request.GET.q }}">
-    <button type="submit">Buscar</button>
-</form>
+{% block body_class %}
+    listar-produto-body
+{% endblock %}
 
-<ul>
-  {% for produto in produtos %}
-    <li>{{ produto.nome }}</li>
-  {% empty %}
-    <li>Nenhum produto encontrado.</li>
-  {% endfor %}
-</ul>
+{% block title %}
+    Listar Produtos
+{% endblock %}
 
-<ul>
-  {% for produto in produtos %}
-    <li>{{ produto.nome }} - R$ {{ produto.preco }}</li>
-  {% empty %}
-    <li>Nenhum produto cadastrado.</li>
-  {% endfor %}
-</ul>
-</html>
+{% block content %}
+<header class="listar-produto-header">
+    <h1 class="listar-produto-title">Estoque de Produtos</h1>
+</header>
+
+<div class="listar-produto-content">
+    {% if produtos %}
+        <div class="tabela-produtos-container">
+            <table class="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto.nome }}</td>
+                        <td>R$ {{ produto.preco|floatformat:2 }}</td>
+                        <td>{{ produto.estoque }}</td>
+                        <td class="acoes">
+                            <a href="{% url 'editar_produto' produto.id %}" class="btn-acao btn-editar">Editar</a>
+                            <a href="#" class="btn-acao btn-excluir">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <h2 class="nenhum-produto">Nenhum produto cadastrado no momento.</h2>
+    {% endif %}
+
+    <div class="listar-produto-actions">
+        <a href="{% url 'criar_produto' %}" class="btn-adicionar">Adicionar Produto</a>
+        <a href="{% url 'dashboard_cantineiro' %}" class="btn-voltar">Voltar ao Painel</a>
+    </div>
+</div>
+{% endblock %}
