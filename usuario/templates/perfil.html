@@ -1,58 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
 
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+{% block title %}
+    Perfil de Usuário
+{% endblock %}
 
-{% if messages %}
-  <div>
-    {% for message in messages %}
-      <p class="alert alert-{{ message.tags }}">
-        {{ message|safe }}
-      </p>
-    {% endfor %}
-  </div>
-{% endif %}
+{% block styles %}
+{% endblock %}
 
-<h2>Meu Perfil</h2>
+{% block content %}
+<div class="profile-body">
+    <div class="frame">
+        <div class="top-bar">
+            <h1>Bem-Vindo ao seu Perfil!</h1>
+        </div>
+        <div class="inner-content">
+            <div> <!-- Container para conteúdo superior e campos -->
+                <!-- Parte superior – Ícone de usuário -->
+                <div class="user-icon-section">
+                    <div class="user-icon">
+                        <!-- Ícone SVG de usuário com contorno grosso -->
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="35" r="20" />
+                            <path d="M20 90 C 20 70, 80 70, 80 90 Z" />
+                        </svg>
+                    </div>
+                </div>
 
-<!-- Seção de informações do usuário -->
-<h4>Informações da Conta</h4>
-<p><b>Usuário:</b> {{ usuario.user.username }}</p>
-<p><b>Nome completo:</b> {{ usuario.user.get_full_name|default:"Não informado" }}</p>
-<p><b>Data de cadastro:</b> {{ usuario.user.date_joined|date:"d/m/Y" }}</p>
-<p><b>Status:</b> {% if usuario.user.is_active %}Ativo{% else %}Inativo{% endif %}</p>
+                <!-- Campos de texto -->
+                <div class="fields-section">
+                    <div class="info-pill">
+                        <strong>Usuário:</strong> {{user.username}}
+                    </div>
+                    
+                    <div class="info-pill">
+                        <strong>Data de cadastro:</strong> {{user.date_joined|date:"d/m/Y"}}
+                    </div>
+                </div>
+            </div>
 
-<hr>
-
-<!-- Seção para gerenciamento da foto -->
-<h4>Foto de Perfil</h4>
-{% if usuario.foto %}
-  <img src="{{ usuario.foto.url }}" alt="Foto de perfil" width="120" height="120">
-{% else %}
-  <span class="material-icons" style="font-size: 120px;">person</span>
-{% endif %}
-
-<form method="post" enctype="multipart/form-data" action="{% url 'perfil' %}">
-    {% csrf_token %}
-    <p>
-        <label for="foto">Enviar nova foto:</label><br>
-        <input type="file" name="foto" accept="image/*" id="foto">
-    </p>
-    {% if usuario.foto %}
-    <p>
-        <input type="checkbox" name="remover_foto" id="remover_foto">
-        <label for="remover_foto">Remover foto atual</label>
-    </p>
-    {% endif %}
-    <button type="submit">Atualizar Foto</button>
-</form>
-
-<hr>
-
-<!-- Seção de Ações -->
-<h4>Ações</h4>
-{% if request.user.usuario.role == 'cantineiro' %}
-  <a href="{% url 'dashboard_cantineiro' %}">Voltar ao Painel</a>
-{% elif request.user.usuario.role == 'aluno' %}
-  <a href="{% url 'painel_usuario' %}">Voltar ao Painel</a>
-{% endif %}
-<br>
-<a href="{% url 'deletar_conta' %}">Deletar Conta</a>
+            <!-- Botões inferiores -->
+            <div class="buttons-section">
+                <div class="button-group">
+                    <button class="btn">Salvar</button>
+                    {% if request.user.usuario.role == 'cantineiro' %}
+                      <a href="{% url 'dashboard_cantineiro' %}">
+                        <button class="btn">Voltar</button>
+                      </a>
+                    {% elif request.user.usuario.role == 'aluno' %}
+                      <a href="{% url 'painel_usuario' %}">
+                        <button class="btn">Voltar</button>
+                      </a>
+                    {% endif %}
+                </div>
+                <div class="button-group">
+                    <a href="{% url 'deletar_conta' %}" class="btn-delete">Excluir minha conta</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

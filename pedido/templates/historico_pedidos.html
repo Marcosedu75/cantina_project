@@ -1,50 +1,52 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-Histórico de Pedidos
+{% block head %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 {% endblock %}
 
-{% block header %}
-<h1>Histórico de Pedidos</h1>
+{% block body_class %}
+    historico-pedidos-body
+{% endblock %}
+
+{% block title %}
+    Histórico de Pedidos
 {% endblock %}
 
 {% block content %}
-<section>
-    <h2>Seu Histórico de Pedidos, {{ user.get_full_name|default:user.username }}</h2>
+<div class="top-bar-historico">
+    <h1>Histórico de pedidos</h1>
+</div>
 
+<div class="historico-container">
     {% if pedidos %}
-        <ul class="list-group">
-            {% for pedido in pedidos %}
-                <li class="list-group-item mb-3">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">Pedido #{{ pedido.id }}</h5>
-                        <small>{{ pedido.data_pedido|date:"d/m/Y H:i" }}</small>
-                    </div>
-                    <p class="mb-1">
-                        <strong>Status:</strong> <span class="badge bg-info text-dark">{{ pedido.get_status_display }}</span> | 
-                        <strong>Total: R$ {{ pedido.valor_total|floatformat:2 }}</strong> | 
-                        <strong>Pagamento:</strong> {{ pedido.get_pagamento_display }}
-                    </p>
-                    <ul class="list-unstyled mt-2">
-                        {% for item in pedido.itens.all %}
-                            <li>- {{ item.quantidade }}x {{ item.produto.nome }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% if pedido.status == 'aberto' or pedido.status == 'pendente' %}
-                        <!-- Não há ações de edição para o aluno aqui, apenas visualização do status. -->
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+        {% for pedido in pedidos %}
+        <div class="history-item">
+            <div class="history-icon"></div>
+            <div class="item-details">
+                {% for item in pedido.itens.all %}
+                    <span class="product-name">{{ item.quantidade }}x {{ item.produto.nome }}</span>
+                {% endfor %}
+            </div>
+            <div class="item-datetime">
+                <span class="date">{{ pedido.data_pedido|date:"d/m/Y" }}</span>
+                <span class="time">{{ pedido.data_pedido|date:"H:i" }}</span>
+                <br>
+                <span class="status">Status: {{ pedido.get_status_display }}</span>
+                <br>
+                <span class="id">ID: {{ pedido.id }}</span>
+                <br>
+                <span class="product-price">R$ {{ pedido.valor_total|floatformat:2 }}</span>
+            </div>
+            
+        </div>
+        {% endfor %}
     {% else %}
-        <p>Você ainda não fez nenhum pedido.</p>
+        <p class="nenhum-produto" style="text-align: center; font-size: 1.2em; margin-top: 50px;">Você ainda não fez nenhum pedido.</p>
     {% endif %}
 
-    <br>
-    <a href="{% url 'painel_usuario' %}">Voltar ao Painel</a>
-</section>
-{% endblock %}
-
-{% block footer %}
-<p>© 2025 Cantina do Aluno</p>
+    <div class="listar-produto-actions">
+        <a href="{% url 'painel_usuario' %}" class="btn-voltar">Voltar ao Painel</a>
+    </div>
+</div>
 {% endblock %}

@@ -53,12 +53,24 @@ def atualizar_status(request, pedido_id):
         # --------------------------------------------------------------------
 
         # Valida se o status recebido é uma das opções válidas no modelo Pedido
+        status_anterior = pedido.status
         opcoes_validas = [choice[0] for choice in Pedido.STATUS_CHOICES]
         if novo_status in opcoes_validas:
+            # --- LÓGICA DE ESTOQUE AO ATUALIZAR STATUS ---
+            # Devolve o estoque se o pedido for cancelado.
+            # A baixa ocorreu quando o pedido foi finalizado (status 'pendente').
+            # A devolução só deve acontecer se o pedido estava em 'pendente' ou 'preparo'.
+            if novo_status == 'cancelado' and status_anterior in ['pendente', 'preparo']:
+                for item in pedido.itens.all():
+                    item.produto.estoque += item.quantidade
+                    item.produto.save()
+                messages.info(request, "Estoque devolvido devido ao cancelamento do pedido.")
+            # ----------------------------------------------------
             pedido.status = novo_status
             pedido.save()
             messages.success(request, f"Status do Pedido #{pedido.id} atualizado para '{pedido.get_status_display()}'.")
             return redirect('atualizar_status', pedido_id=pedido.id)
+
         else:
             messages.error(request, "Status inválido. A atualização falhou.")
             # Redireciona de volta para a página de detalhes ou lista
@@ -77,20 +89,22 @@ def atualizar_status(request, pedido_id):
 @user_passes_test(is_cantineiro, login_url='usuario_login')
 def deletar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
+    
     if request.method == 'POST':
-        # REGRA: Devolve o estoque apenas se o pedido não foi entregue.
-        if pedido.status in ['pendente', 'preparo', 'cancelado']:
-            # Para estes status, o estoque é devolvido.
-            # Itera sobre cada item para acionar a lógica em ItemPedido.delete().
+        # REGRA: Devolve o estoque se o pedido não foi entregue.
+        # O estoque foi debitado nos status 'pendente' e 'preparo'.
+        if pedido.status in ['pendente', 'preparo']:
             for item in pedido.itens.all():
-                item.delete()
+                item.produto.estoque += item.quantidade
+                item.produto.save()
             messages.success(request, f"Pedido #{pedido.id} excluído e o estoque foi devolvido.")
         
-        elif pedido.status == 'entregue':
-            # Para pedidos entregues, o estoque NÃO é devolvido.
-            # Usamos um bulk delete que não chama o .delete() de cada item.
+        elif pedido.status in ['entregue', 'cancelado', 'aberto']:
+            # Para 'entregue', o estoque não é devolvido.
+            # Para 'cancelado', o estoque já foi devolvido na mudança de status.
+            # Para 'aberto', o estoque nunca foi debitado.
             pedido.itens.all().delete()
-            messages.success(request, f"Pedido #{pedido.id} excluído. O estoque não foi alterado pois o pedido já havia sido entregue.")
+            messages.success(request, f"Pedido #{pedido.id} excluído.")
 
         # Após tratar os itens, deleta o objeto Pedido.
         pedido.delete()
@@ -263,7 +277,7 @@ def confirmar_pedido(request):
             return redirect('ver_carrinho') # Redireciona de volta ao carrinho
 
     # --- LÓGICA PARA DAR BAIXA NO ESTOQUE ---
-    # Se todas as verificações passaram, agora sim damos baixa no estoque.
+    # O estoque é debitado assim que o pedido é confirmado e se torna 'pendente'.
     for item in pedido_aberto.itens.all():
         produto = item.produto
         produto.estoque -= item.quantidade

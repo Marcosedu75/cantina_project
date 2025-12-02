@@ -178,18 +178,26 @@ def perfil(request):
 
 @login_required
 def deletar_conta(request):
-    if request.method == "POST":
-        confirm_text = request.POST.get("confirm_text", "").strip()
-        if confirm_text == "delete":
-            user = request.user
-            logout(request)
-            user.delete()
-            return redirect("home")
-        else:
-            # Retorna para a página de confirmação com erro
-            return render(request, "contadelete.html", {
-                "erro": "Você precisa digitar 'delete' para confirmar."
-            })
+    if request.method == 'POST':
+        user = request.user
 
-    return render(request, "contadelete.html")
+        # --- LÓGICA DE ESTOQUE AO EXCLUIR CONTA ---
+        # Itera sobre todos os pedidos do usuário para tratar o estoque.
+        pedidos_do_usuario = Pedido.objects.filter(usuario=user)
+        for pedido in pedidos_do_usuario:
+            # Devolve o estoque para pedidos que não foram entregues ou cancelados.
+            # O estoque foi debitado nos status 'pendente' e 'preparo'.
+            if pedido.status in ['pendente', 'preparo']:
+                for item in pedido.itens.all():
+                    item.produto.estoque += item.quantidade
+                    item.produto.save()
+        # ----------------------------------------------------
+
+        logout(request)  # Faz o logout antes de deletar para invalidar a sessão
+        user.delete() # Deletar o usuário também deletará seus pedidos em cascata
+        messages.success(request, 'Sua conta foi excluída com sucesso.')
+        return redirect('home')  # Redireciona para a página inicial
+
+    # Se o método for GET, apenas renderiza a página de confirmação
+    return render(request, 'contadelete.html')
     

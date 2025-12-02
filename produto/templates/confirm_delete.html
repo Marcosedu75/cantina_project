@@ -1,11 +1,29 @@
-{% extends 'base.html' %}
-{% block content %}
-  <h2>Excluir Produto</h2>
-  <p>Tem certeza que deseja excluir o produto "{{ produto.nome }}"?</p>
+{% extends "base.html" %}
+{% load static %}
 
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Confirmar exclusão</button>
-    <a href="{% url 'editar_produto' produto.id %}">Cancelar</a>
-  </form>
+{% block body_class %}
+    deletar-produto-body
+{% endblock %}
+
+{% block title %}
+    Deletar Produto
+{% endblock %}
+
+{% block content %}
+<div class="deletar-produto-container">
+    <header class="deletar-produto-header">
+        <h1 class="deletar-produto-title">Confirmar Exclusão</h1>
+    </header>
+
+    <div class="deletar-produto-content">
+        <p>Você tem certeza que deseja excluir o produto <strong>"{{ produto.nome }}"</strong>?</p>
+        <p class="aviso">Esta ação não poderá ser desfeita.</p>
+
+        <form method="post" class="deletar-produto-form">
+            {% csrf_token %}
+            <button type="submit" class="btn-acao btn-excluir">Sim, excluir</button>
+            <a href="{% url 'listar_produtos' %}" class="btn-acao btn-cancelar">Cancelar</a>
+        </form>
+    </div>
+</div>
 {% endblock %}

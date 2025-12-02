@@ -158,7 +158,7 @@
 
 
 .painel-credited { /* Corrected selector to target the h4 directly */
-  color: var(--primary-color);
+  color: var(--secondary-color);
   margin-top: 10px;
   text-align: center; /* Correct property for centering text */
 }
@@ -175,9 +175,10 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #00aeff;
+  background: var(--neon-color);
   border: 10px solid var(--neon-color);   /* Define a largura da borda */
   flex-direction: column; /* Alinha os itens verticalmente */
+  animation: rgb-screen-border-animation 7s linear infinite;
 }
 
 
@@ -188,6 +189,19 @@ header {
   z-index: 10; /* Garante que o header fique sobre outros elementos se necessário */
 }
 
+/* Estilo para o ícone de perfil no canto superior direito */
+.profile-icon {
+  position: absolute;
+  top: 20px; /* Distância do topo */
+  right: 30px; /* Distância da direita */
+  z-index: 10;
+}
+
+.profile-icon a {
+  color: var(--primary-color); /* Cor branca para o ícone */
+  font-size: 2.2em; /* Tamanho do ícone */
+  text-decoration: none;
+}
 
 .wrapper {
   position: relative;
@@ -590,6 +604,7 @@ button {
 }
 
 
+
 .carrinho-container h1 {
     font-family: Arial, sans-serif;
     font-size: 28px;
@@ -722,6 +737,190 @@ button {
     color: #fff;
 }
 
+/* --- Estilos da Página de Deletar Conta --- */
+
+/* 1. Body da página */
+.deletar-conta-body {
+    background-color: var(--neon-color);
+    animation: rgb-screen-border-animation 7s linear infinite;
+    /* display, justify-content, align-items são herdados do estilo global do body */
+}
+
+/* 2. Container principal */
+.deletar-conta-container {
+    width: 90%;
+    max-width: 500px;
+    padding: 40px;
+    background-color: var(--primary-color);
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    color: var(--secondary-color);
+    text-align: center;
+    animation: rgb-border-shadow-animation 20s linear infinite;
+}
+
+/* 3. Título */
+.deletar-conta-title {
+    color: var(--secondary-color);
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* 4. Texto de aviso */
+.deletar-conta-warning {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.deletar-conta-warning strong {
+    color: #cc0000; /* Vermelho para dar ênfase ao perigo */
+    font-weight: 600;
+}
+
+/* 5. Seção dos botões */
+.deletar-conta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Botão de exclusão (vermelho) */
+.btn-delete-confirm {
+    background-color: #dc3545; /* Vermelho para ação destrutiva */
+    animation: none; /* Remove a animação RGB para se destacar */
+}
+.btn-delete-confirm:hover {
+    background-color: #c82333; /* Vermelho mais escuro no hover */
+}
+
+/* --- Estilos da Página de Perfil --- */
+
+/* 1. Corpo da página de perfil */
+.profile-body {
+    /* A animação de borda foi removida desta página. */
+    background-color: var(--neon-color); /* Cor de fundo padrão do site */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 20px); /* Ocupa a altura da tela, descontando a borda do body */
+}
+
+/* 2. Container principal (frame) */
+.frame {
+    width: 90%;
+    max-width: 600px;
+    background-color: var(--primary-color);
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Garante que a top-bar não vaze */
+}
+
+/* 3. Barra superior com o título */
+.top-bar {
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.top-bar h1 {
+    margin: 0;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+/* 4. Conteúdo interno (abaixo da barra) */
+.inner-content {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espaço entre as seções */
+}
+
+/* 5. Seção do ícone de usuário */
+.user-icon-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.user-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #003366;
+}
+
+.user-icon svg {
+    width: 70%;
+    height: 70%;
+    fill: none;
+    stroke: #003366;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* 6. Seção dos campos de informação */
+.fields-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-pill {
+    background-color: #f0f0f0;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 1em;
+    color: #333;
+    border: none; /* Garante que nenhuma borda seja aplicada */
+}
+
+.info-pill strong {
+    color: #000;
+}
+
+/* 7. Seção dos botões */
+.buttons-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn {
+    width: 150px;
+    animation: rgb-animation 7s linear infinite; /* Reutiliza a animação de botão */
+}
+
+.btn-delete {
+    background: #dc3545; /* Cor vermelha para exclusão */
+    color: white;
+    border: none;
+    width: auto;
+    padding: 10px 20px;
+    animation: none; /* Remove a animação RGB do botão de excluir */
+}
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -794,7 +993,6 @@ button {
 .criar-produto-body {
     background-color: var(--neon-color);
     padding: 0;
-    border: none; 
     /* Mantém o alinhamento global para centralizar o container */
     justify-content: flex-start; /* Alinha o container no topo */
     animation: rgb-screen-border-animation 7s linear infinite;
@@ -803,7 +1001,7 @@ button {
 /* O container principal da página */
 .criar-produto-container {
     width: 100%;
-    padding-top: 150px; /* Aumentado para descer o formulário */
+    padding-top: 210px; /* Aumentado para descer o formulário */
 }
 
 .criar-produto-header {
@@ -818,6 +1016,7 @@ button {
     display: flex;
     align-items: center; /* Centraliza o título verticalmente */
     justify-content: center; /* Centraliza o conteúdo do header horizontalmente */
+    /* z-index: -1; Coloca o header atrás da borda do body */
 }
 
 .criar-produto-title {
@@ -918,6 +1117,124 @@ button {
     gap: 15px;
     margin-top: 30px;
 }
+    
+.add-product-credited {
+  color: var(--secondary-color);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.editar-product-credited {
+  color: var(--secondary-color);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.login-credited {
+  color: var(--secondary-color);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.pay-credited {
+  color: var(--secondary-color);
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* --- Estilos da Página de Histórico de Pedidos --- */
+
+/* Estilo para o corpo da página de histórico */
+.historico-pedidos-body {
+    background-color: var(--neon-color);
+    font-family: "Poppins", sans-serif; /* Fonte padrão do site */
+    position: relative; /* Necessário para a barra lateral */
+    padding-right: 40px; /* Espaço para a barra lateral não sobrepor o conteúdo */
+    animation: rgb-screen-border-animation 7s linear infinite; /* Animação de borda neon */
+}
+
+/* Container principal da página de histórico */
+.historico-container {
+    width: 100%;
+    padding-top: 110px; /* Reduzido para mover o conteúdo para cima */
+    padding-bottom: 20px;
+}
+
+/* Faixa do título */
+.top-bar-historico {
+    background-color: #003366; /* Cor igual ao do criar-produto-header */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.top-bar-historico h1 {
+    color: white;
+    font-size: 2.5em;
+    font-weight: 600;
+    text-transform: none; /* Remove o uppercase para igualar */
+    margin: 0;
+}
+
+/* Cartão de item do histórico */
+.history-item {
+    background-color: var(--primary-color);
+    border-radius: 20px; /* Cantos um pouco mais arredondados */
+    padding: 30px 35px; /* Aumentado para maior espaçamento interno */
+    margin-bottom: 25px; /* Aumentado para mais espaço entre os cartões */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--secondary-color);
+    max-width: 900px; /* Aumentado para deixar o card mais largo */
+    margin-left: auto;
+    margin-right: auto;
+    /* Animação de borda e sombra neon */
+    animation: rgb-border-shadow-animation 20s linear infinite;
+}
+
+/* Detalhes do produto (nome e preço) */
+.item-details {
+    flex-grow: 1;
+}
+.item-details .product-name {
+    font-size: 1.5em; /* Fonte maior para o nome do produto */
+    font-weight: 600;
+}
+
+.item-details .product-price {
+    font-size: 1.3em; /* Fonte maior para o preço */
+    font-weight: 500;
+    color: #333; /* Cor um pouco mais suave */
+}
+
+.item-datetime {
+    text-align: right;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.item-datetime span {
+    font-size: 1em; /* Aumenta a fonte da data e hora */
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Círculo azul à esquerda */
+.history-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #0d47a1; /* Azul escuro */
+    border-radius: 50%; /* Círculo perfeito */
+    margin-right: 20px;
+}
+
 
 /* --- Estilos da Página de Listar Pedidos --- */
 
@@ -926,7 +1243,7 @@ button {
     background-color: var(--neon-color) !important;
     animation: rgb-screen-border-animation 7s linear infinite;
     /* Alinhamento geral: Inicia no topo e centraliza horizontalmente o conteúdo */
-    align-items: center; 
+    align-items: center;
     padding-top: 50px;
     width: 100%; /* Garante que o body ocupe a largura total para centralizar o container */
 }
@@ -992,7 +1309,7 @@ button {
 .pedido-actions {
     display: flex;
     gap: 15px; /* Mais espaço entre os botões de ação */
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
 
 /* Estilos para os links (Ver detalhes, Atualizar status) */
@@ -1050,7 +1367,7 @@ button {
     .pedidos-list-container {
         padding: 20px 10px; /* Reduz padding lateral em mobile */
     }
-    
+   
     .pedido-item {
         flex-direction: column;
         align-items: flex-start;
@@ -1061,7 +1378,7 @@ button {
         margin-bottom: 10px;
         margin-right: 0;
     }
-    
+   
     .pedido-actions {
         width: 100%;
         gap: 10px;
@@ -1072,19 +1389,19 @@ button {
         width: 100%;
         text-align: center;
     }
-}
+  }
 
-/* --- Estilos da Página de Detalhes do Pedido --- */
+* --- Estilos da Página de Detalhes do Pedido --- */
 
 /* 1. Body com fundo e animação neon */
 .detalhes-pedido-body {
     width: 100%;
     min-height: 100vh;
     /* Alinhamento que permite a centralização interna do container */
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
     padding-top: 50px; /* Um pouco de espaço extra do topo se o container for pequeno */
-    background-color: #00aeff !important;
+    background-color: var(--neon-color) !important;
     animation: rgb-screen-border-animation 7s linear infinite;
 }
 
@@ -1148,16 +1465,16 @@ button {
 .detalhes-actions .btn-voltar {
     /* Reutiliza o estilo base do botão animado */
     display: inline-block;
-    width: 150px; 
+    width: 150px;
     height: 45px;
     text-align: center;
     text-decoration: none;
     font-weight: 500;
     border-radius: 5px;
-    
+   
     /* Cores e Animação */
     color: var(--primary-color);
-    background: #003366; 
+    background: #003366;
     animation: rgb-animation 7s linear infinite;
 }
 
@@ -1174,17 +1491,19 @@ button {
     color: #ff3333;
 }
 
-/* --- Estilos da Página de Atualizar Status --- */
+
+
+* --- Estilos da Página de Atualizar Status --- */
 
 .status-update-body {
     /* Configurações de fundo animado */
     width: 100%;
     min-height: 100vh;
-    justify-content: center; 
-    align-items: center; 
-    padding-top: 50px; 
-    border: 10px solid var(--primary-color); 
-    background-color: #00aeff !important; 
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+    border: 10px solid var(--primary-color);
+    background-color: var(--neon-color) !important;
     animation: rgb-screen-border-animation 7s linear infinite;
 }
 
@@ -1318,6 +1637,8 @@ button {
     background: #5a6268;
 }
 
+/* --- Estilos da Página de Listar Produto --- */
+
 .listar-produto-body {
     /* Mantém o fundo neon e a animação de borda RGB */
     background-color: var(--neon-color) !important;
@@ -1439,4 +1760,115 @@ button {
 .btn-adicionar:hover, .btn-voltar:hover {
     background-color: #003366;
     color: #fff;
+}
+
+/* --- Estilos da Página de Deletar Conta (Baseado no HTML fornecido) --- */
+
+/* 1. Ajusta o container .wrapper para ter altura automática nesta página */
+.delete-page .wrapper {
+    height: auto; /* Remove a altura fixa de 500px */
+    padding: 40px; /* Adiciona um padding interno */
+}
+
+/* 2. Estilo para o parágrafo de aviso */
+.delete-warning-text {
+    text-align: center;
+    margin: -10px 0 25px 0; /* Ajusta margens para ficar bom entre o título e os botões */
+    color: var(--secondary-color); /* Cor preta para ser legível no fundo branco */
+    line-height: 1.5;
+    font-size: 1em;
+}
+
+/* 3. Container para os botões de ação */
+.delete-buttons {
+    display: flex;
+    flex-direction: column; /* Coloca os botões um sobre o outro */
+    gap: 15px; /* Espaço entre os botões */
+}
+
+/* 4. Estilo para o botão de cancelar (<a>) */
+.btn-cancel {
+    display: block; /* Faz o link se comportar como um bloco */
+    width: 100%;
+    height: 45px;
+    line-height: 45px; /* Centraliza o texto verticalmente */
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    background-color: #6c757d; /* Cor cinza para ação secundária */
+    color: var(--primary-color); /* Texto branco */
+    transition: background-color 0.3s ease;
+}
+.btn-cancel:hover {
+    background-color: #5a6268; /* Cinza mais escuro no hover */
+}
+
+/* --- Estilos da Página de Deletar Produto --- */
+
+/* 1. Body da página */
+.deletar-produto-body {
+    background-color: var(--neon-color);
+    animation: rgb-screen-border-animation 7s linear infinite;
+    /* display, justify-content, align-items são herdados do estilo global do body */
+}
+
+/* 2. Container principal */
+.deletar-produto-container {
+    width: 90%;
+    max-width: 500px;
+    padding: 40px;
+    background-color: var(--primary-color);
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    color: var(--secondary-color);
+    text-align: center;
+    animation: rgb-border-shadow-animation 20s linear infinite;
+}
+
+/* 3. Título */
+.deletar-produto-title {
+    color: var(--secondary-color);
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* 4. Conteúdo e texto de aviso */
+.deletar-produto-content p {
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.deletar-produto-content .aviso {
+    color: #cc0000; /* Vermelho para dar ênfase ao perigo */
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* 5. Formulário com os botões */
+.deletar-produto-form {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Alinha os botões verticalmente */
+    gap: 20px;
+}
+
+/* Estilo específico para o botão de exclusão na página de deletar produto */
+.deletar-produto-form .btn-excluir {
+  background-color: #c82333; /* Um vermelho mais forte para destaque */
+  animation: none; /* Remove a animação para manter a cor sólida */
+}
+
+.deletar-produto-form .btn-cancelar {
+  background-color: #333;
+}
+
+/* Garante que ambos os botões tenham o mesmo tamanho */
+.deletar-produto-form .btn-excluir,
+.deletar-produto-form .btn-cancelar {
+  width: 120px; /* Define uma largura fixa */
+  padding: 10px 0; /* Ajusta o padding vertical */
 }

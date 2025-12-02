@@ -34,7 +34,7 @@
                         <td>{{ produto.estoque }}</td>
                         <td class="acoes">
                             <a href="{% url 'editar_produto' produto.id %}" class="btn-acao btn-editar">Editar</a>
-                            <a href="#" class="btn-acao btn-excluir">Excluir</a>
+                            <a href="{% url 'deletar_produto' produto.id %}" class="btn-acao btn-excluir">Excluir</a>
                         </td>
                     </tr>
                     {% endfor %}
